@@ -21,6 +21,12 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             return result;
         }
 
+        public Task<Photo> GetPhotoByIdAsync(int id)
+        {
+            var result = _context.Photos.FirstAsync(p => p.Id == id);
+            return result;
+        }
+
         public async Task<IEnumerable<Photo>> GetFeaturedPhotos()
         {
             IEnumerable<Photo> result = await _context.Photos.Where(p => p.IsFeatured == true).ToListAsync();
@@ -35,7 +41,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
 
         public async Task<bool> UploadPhoto(UploadPhotoVM photoVM)
         {
-            var result = _cloudService.AddPhoto(photoVM.Image);
+            var result = await _cloudService.AddPhotoAsync(photoVM.Image);
             var photo = new Photo
             {
                 Title = photoVM.Title,
@@ -45,6 +51,24 @@ namespace SocialPhotoAppMVC.Services.PhotoService
                 User = await _context.Users.FirstOrDefaultAsync(u => u.Id == photoVM.UserId),
             };
             _context.Photos.Add(photo);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public async Task<bool> DeletePhotoAsync(int id)
+        {
+            var photo = await GetPhotoByIdAsync(id);
+            if (photo == null)
+            {
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(photo.ImageUrl))
+            {
+                await _cloudService.DeletePhotoAsync(photo.ImageUrl);
+            }
+
+            _context.Photos.Remove(photo);
             _context.SaveChanges();
             return true;
         }

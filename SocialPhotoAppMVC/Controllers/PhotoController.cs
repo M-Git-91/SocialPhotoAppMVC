@@ -72,6 +72,28 @@ namespace SocialPhotoAppMVC.Controllers
             }
             return View(photoVM);
         }
+
+        public async Task<IActionResult> DeletePhoto(int id)
+        {
+            var photo = await _photoService.GetPhotoByIdAsync(id);
+            if (photo == null)
+            {
+                return View("Error");
+            }
+            return View(photo);
+        }
+
+        [HttpPost, ActionName("DeletePhoto")]
+        public async Task<IActionResult> DeletePhotoPost(int id)
+        {
+            var result = await _photoService.DeletePhotoAsync(id);
+
+            if(result == true) 
+            {
+                return RedirectToAction("Index");
+            }
+            return View("Error");
+        }
     }
 
 }

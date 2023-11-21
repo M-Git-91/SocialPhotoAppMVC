@@ -20,7 +20,7 @@ namespace SocialPhotoAppMVC.Services
             _cloudinary = new Cloudinary(acc);
         }
 
-        public ImageUploadResult AddPhoto(IFormFile file)
+        public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file)
         {
             var uploadResult = new ImageUploadResult();
             if (file.Length > 0)
@@ -30,16 +30,18 @@ namespace SocialPhotoAppMVC.Services
                 {
                     File = new FileDescription(file.FileName, stream),
                 };
-                uploadResult = _cloudinary.Upload(uploadParams);
+                uploadResult = await _cloudinary.UploadAsync(uploadParams);
             }
+
             return uploadResult;
         }
 
-        public DeletionResult DeletePhoto(string publicUrl)
+        public async Task<DeletionResult> DeletePhotoAsync(string publicUrl)
         {
             var publicId = publicUrl.Split('/').Last().Split('.')[0];
             var deleteParams = new DeletionParams(publicId);
-            return _cloudinary.Destroy(deleteParams);
+            var result = await _cloudinary.DestroyAsync(deleteParams);
+            return result;
         }
 
     }
