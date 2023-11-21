@@ -1,9 +1,26 @@
 ﻿@model Photo
 
-
-<div class="">
-    <img class="" src="@Model.ImageUrl" alt="Card image cap">
-        <p class="">@Model.Title</p>
-        <p class="">@Model.Description</p>
+<div class="text-center">
+    <!-- Button trigger modal -->
+    <section type="button" class="text-center" data-bs-toggle="modal" data-bs-target="#zoomPhoto">
+        <section class="bg-dark">
+            <img class="img-fluid pb-3" src="@Model.ImageUrl" alt="Card image cap">
+        </section>
+    </section>
+    <section class="text-dark bg-light mb-3 m-auto">
+        <h2 class="card-header">@Model.Title</h2>
+        <h4 class="">Author: @Model.User.NickName</h4>
+        <p class="">Description: @Model.Description</p>
+        <p class="">Category: @Model.Category</p>
+        <p class="">Upload Date:@Model.DateCreated</p>
+    </section>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="zoomPhoto" tabindex="-1" aria-labelledby="modalZoomedPhoto" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered .modal-dialog-scrollable text-center">
+        <div class="modal-body">
+            <img src="@Model.ImageUrl" alt="originalSizePhoto" />
+        </div>
+    </div>
+</div>

@@ -2,6 +2,9 @@ global using SocialPhotoAppMVC.Data;
 global using SocialPhotoAppMVC.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SocialPhotoAppMVC.Helpers;
+using SocialPhotoAppMVC.Services;
+using SocialPhotoAppMVC.Services.PhotoService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,17 +14,24 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+//Services/Repositories
+builder.Services.AddScoped<IPhotoService, PhotoService >();
+builder.Services.AddScoped<ICloudService, CloudService>();
+//Identity
 builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddAuthentication()
+    .AddGoogle(googleOptions =>
+    {
+        googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+        googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    });
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddAuthentication()
-    .AddGoogle(googleOptions =>
-{
-    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-});
+//Cloudinary
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
 var app = builder.Build();
 

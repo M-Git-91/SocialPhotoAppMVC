@@ -2,47 +2,75 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using SocialPhotoAppMVC.Services;
+using SocialPhotoAppMVC.Services.PhotoService;
+using SocialPhotoAppMVC.ViewModels;
+using System.Net;
+using System.Net.Http;
 using System.Security.Claims;
 
 namespace SocialPhotoAppMVC.Controllers
 {
     public class PhotoController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IPhotoService _photoService;
         private readonly IHttpContextAccessor _httpContext;
 
-        public PhotoController(ApplicationDbContext context, IHttpContextAccessor httpContext)
+        public PhotoController(IPhotoService photoService, IHttpContextAccessor httpContext)
         {
-            _context = context;
+            _photoService = photoService;
             _httpContext = httpContext;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var recentPhotos = await _context.Photos.OrderByDescending(p => p.DateCreated).ToListAsync();
+            var recentPhotos = await _photoService.GetAllPhotos();
 
             return View(recentPhotos);
         }
 
+        [HttpGet]
         public async Task<IActionResult> FeaturedPhotos()
         {
-            var featuredPhotos = await _context.Photos.Where(p => p.IsFeatured == true).ToListAsync();
+            var featuredPhotos = await _photoService.GetFeaturedPhotos();
 
             return View(featuredPhotos);
         }
         
-        public async Task<IActionResult> UserPhotos()
-        {
-            var currentUser = _httpContext.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userPhotos = await _context.Photos.Where(p => p.User.Id == currentUser).ToListAsync();
-
-            return View(userPhotos);
-        }
-
+        [HttpGet]
         public async Task<IActionResult> PhotoDetail(int id) 
         {
-            var findPhoto = _context.Photos.FirstOrDefault(p => p.Id == id);
+            var findPhoto = await _photoService.GetPhotoDetail(id);
             return View(findPhoto);
+        }
+
+        [HttpGet]
+        public IActionResult UploadPhoto()
+        {
+            var currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var createUploadPhotoVM = new UploadPhotoVM { UserId = currentUserId };
+            return View(createUploadPhotoVM);
+        }
+
+
+        [HttpPost, ActionName("UploadPhoto")]
+        public async Task<IActionResult> UploadPhoto(UploadPhotoVM photoVM)
+        {
+            if (ModelState.IsValid)
+            {
+                bool uploadPhoto = await _photoService.UploadPhoto(photoVM);
+                if (uploadPhoto == true)
+                {
+                    return RedirectToAction("Index");
+                }
+                return View(photoVM);
+            }
+            else
+            {
+                ModelState.AddModelError("", "Photo upload unsuccessful.");
+            }
+            return View(photoVM);
         }
     }
 
