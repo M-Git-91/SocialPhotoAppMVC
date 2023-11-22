@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using SocialPhotoAppMVC.ViewModels;
+using System.Security.Claims;
 
 namespace SocialPhotoAppMVC.Services.PhotoService
 {
@@ -23,7 +24,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
 
         public Task<Photo> GetPhotoByIdAsync(int id)
         {
-            var result = _context.Photos.FirstAsync(p => p.Id == id);
+            var result = _context.Photos.Include(p => p.User).FirstAsync(p => p.Id == id);
             return result;
         }
 
@@ -55,9 +56,9 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             return true;
         }
 
-        public async Task<bool> DeletePhotoAsync(int id)
+        public async Task<bool> DeletePhotoAsync(int photoId)
         {
-            var photo = await GetPhotoByIdAsync(id);
+            var photo = await GetPhotoByIdAsync(photoId);
             if (photo == null)
             {
                 return false;

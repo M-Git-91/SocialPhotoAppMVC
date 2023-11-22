@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -49,7 +50,7 @@ namespace SocialPhotoAppMVC.Controllers
         public IActionResult UploadPhoto()
         {
             var currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var createUploadPhotoVM = new UploadPhotoVM { UserId = currentUserId };
+            UploadPhotoVM createUploadPhotoVM = new UploadPhotoVM { UserId = currentUserId };
             return View(createUploadPhotoVM);
         }
 
@@ -73,27 +74,57 @@ namespace SocialPhotoAppMVC.Controllers
             return View(photoVM);
         }
 
+        [HttpGet, Authorize]
         public async Task<IActionResult> DeletePhoto(int id)
         {
-            var photo = await _photoService.GetPhotoByIdAsync(id);
+            string currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            Photo photo = await _photoService.GetPhotoByIdAsync(id);
             if (photo == null)
             {
                 return View("Error");
             }
-            return View(photo);
+
+            DeletePhotoVM createDeletePhotoVM = new DeletePhotoVM { 
+                UserId = currentUserId, 
+                PhotoOwnerId = photo.User.Id,
+                PhotoId = id,
+                Title = photo.Title,
+                Description = photo.Description,
+                Category = photo.Category,
+            };
+
+            return View(createDeletePhotoVM);
         }
 
-        [HttpPost, ActionName("DeletePhoto")]
-        public async Task<IActionResult> DeletePhotoPost(int id)
+        [HttpPost, ActionName("DeletePhoto"), Authorize]
+        public async Task<IActionResult> DeletePhotoPost(DeletePhotoVM deletePhotoVM)
         {
-            var result = await _photoService.DeletePhotoAsync(id);
+            if (deletePhotoVM.UserId == deletePhotoVM.PhotoOwnerId)
+            {
+                bool result = await _photoService.DeletePhotoAsync(deletePhotoVM.PhotoId);
+                if (result == true)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return View("ErrorPage");
+                }
+            }
+            return View("ErrorPage");
+        }
+        /*
+        [HttpPost, ActionName("DeletePhoto"), Authorize]
+        public async Task<IActionResult> DeletePhotoPost(int photoId)
+        {
+            var result = await _photoService.DeletePhotoAsync(photoId);
 
-            if(result == true) 
+            if (result == true)
             {
                 return RedirectToAction("Index");
             }
             return View("Error");
-        }
+        }*/
     }
 
 }
