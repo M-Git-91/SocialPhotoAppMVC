@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +17,15 @@ namespace SocialPhotoAppMVC.Controllers
     {
         private readonly IPhotoService _photoService;
         private readonly IHttpContextAccessor _httpContext;
+        private readonly ICloudService _cloudService;
+        private readonly ApplicationDbContext _context;
 
-        public PhotoController(IPhotoService photoService, IHttpContextAccessor httpContext)
+        public PhotoController(IPhotoService photoService, IHttpContextAccessor httpContext, ICloudService cloudService, ApplicationDbContext context)
         {
             _photoService = photoService;
             _httpContext = httpContext;
+            _cloudService = cloudService;
+            _context = context;
         }
 
         [HttpGet]
@@ -81,7 +86,7 @@ namespace SocialPhotoAppMVC.Controllers
             Photo photo = await _photoService.GetPhotoByIdAsync(id);
             if (photo == null)
             {
-                return View("Error");
+                return View("ErrorPage");
             }
 
             DeletePhotoVM createDeletePhotoVM = new DeletePhotoVM { 
@@ -111,20 +116,82 @@ namespace SocialPhotoAppMVC.Controllers
                     return View("ErrorPage");
                 }
             }
-            return View("ErrorPage");
-        }
-        /*
-        [HttpPost, ActionName("DeletePhoto"), Authorize]
-        public async Task<IActionResult> DeletePhotoPost(int photoId)
-        {
-            var result = await _photoService.DeletePhotoAsync(photoId);
-
-            if (result == true)
+            else
             {
-                return RedirectToAction("Index");
+                return View("ErrorPage");
+            }            
+        }
+
+        [HttpGet, Authorize]
+        public async Task<IActionResult> EditPhoto(int id)
+        {
+            string currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            Photo photo = await _photoService.GetPhotoByIdAsync(id);
+            if (photo == null)
+            {
+                return View("ErrorPage");
             }
-            return View("Error");
-        }*/
+
+            var photoVM = new EditPhotoVM
+            {
+                PhotoId = photo.Id,
+                Title = photo.Title,
+                Description = photo.Description,
+                ImageUrl = photo.ImageUrl,
+                Category = photo.Category,
+                CurrentUserId = currentUserId,
+                AuthorId = photo.User.Id,
+            };
+            return View(photoVM);
+        }
+
+
+        [HttpPost, ActionName("EditPhoto"), Authorize]
+        public async Task<IActionResult> EditPhotoPost(EditPhotoVM editPhotoVM)
+        {
+            if (editPhotoVM.CurrentUserId == editPhotoVM.AuthorId)
+            {
+                var oldPhoto = await _photoService.GetPhotoByIdAsync(editPhotoVM.PhotoId);
+                if (oldPhoto == null)
+                {
+                    TempData["Error"] = "Photo was not found.";
+                    return View("ErrorPage");
+                }
+
+                var newPhotoUpload = await _cloudService.AddPhotoAsync(editPhotoVM.NewImage);
+                if (newPhotoUpload.Error != null)
+                {
+                    TempData["Error"] = "New photo was not uploaded";
+                    return View(editPhotoVM);
+                }
+
+                if (!string.IsNullOrEmpty(oldPhoto.ImageUrl))
+                {
+                    await _cloudService.DeletePhotoAsync(oldPhoto.ImageUrl);
+                }
+
+                var newPhoto = new Photo
+                {
+                    Id = editPhotoVM.PhotoId,
+                    Title = editPhotoVM.Title,
+                    Description = editPhotoVM.Description,
+                    ImageUrl = newPhotoUpload.Uri.ToString(),
+                    Category = editPhotoVM.Category,
+                    User = await _context.AppUsers.FirstOrDefaultAsync(u => u.Id == editPhotoVM.CurrentUserId)
+
+                };
+
+                _context.Photos.Update(newPhoto);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+  
+            }
+            else
+            {
+                TempData["Error"] = "You are not authorized to edit this photo.";
+                return View("ErrorPage");
+            }
+        }
     }
 
 }

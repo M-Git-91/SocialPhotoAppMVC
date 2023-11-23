@@ -1,0 +1,39 @@
+﻿@using SocialPhotoAppMVC.Enums;
+@using SocialPhotoAppMVC.ViewModels
+@model EditPhotoVM
+
+<h1>Photo editing</h1>
+
+<form method="post" asp-action="EditPhoto" enctype="multipart/form-data">
+    <input type="hidden" value="AuthorId" id="AuthorId" />
+    <input type="hidden" value="CurrentUserId" id="CurrentUserId" />
+    <input type="hidden" value="PhotoId" id="PhotoId" />
+    <div class="form-group">
+        <label asp-for="Title">Title</label>
+        <input asp-for="Title" class="form-control" placeholder="Title">
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description">Description</label>
+        <input asp-for="Description" class="form-control" placeholder="Description">
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Category">Club Category</label>
+        <select asp-for="Category" asp-items="@Html.GetEnumSelectList<Category>()" class="form-control">
+            <option selected="selected" value="">--Select--</option>
+        </select>
+        <span asp-validation-for="Category" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="NewImage">Choose photo</label>
+        <input type="file" asp-for="NewImage" class="form-control">
+        <span asp-validation-for="NewImage" class="text-danger"></span>
+    </div>
+    
+    <input type="hidden" asp-for="AuthorId" />
+    <input type="hidden" asp-for="CurrentUserId" />
+    <input type="hidden" asp-for="PhotoId" />
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

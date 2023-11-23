@@ -24,7 +24,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
 
         public Task<Photo> GetPhotoByIdAsync(int id)
         {
-            var result = _context.Photos.Include(p => p.User).FirstAsync(p => p.Id == id);
+            var result = _context.Photos.AsNoTracking().Include(p => p.User).FirstAsync(p => p.Id == id);
             return result;
         }
 
@@ -72,6 +72,11 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             _context.Photos.Remove(photo);
             _context.SaveChanges();
             return true;
+        }
+
+        public Task<bool> EditPhotoAsync(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
