@@ -10,6 +10,6 @@ namespace SocialPhotoAppMVC.Services.PhotoService
         Task<Photo> GetPhotoDetail(int id);
         Task<bool> UploadPhoto(UploadPhotoVM photoVM);
         Task<bool> DeletePhotoAsync(int id);
-        Task<bool> EditPhotoAsync(int id);
+        Task<bool> EditPhotoAsync(EditPhotoVM editPhotoVM);
     }
 }

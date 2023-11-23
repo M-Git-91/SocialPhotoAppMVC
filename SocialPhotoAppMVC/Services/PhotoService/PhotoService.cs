@@ -74,9 +74,40 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             return true;
         }
 
-        public Task<bool> EditPhotoAsync(int id)
+        public async Task<bool> EditPhotoAsync(EditPhotoVM editPhotoVM)
         {
-            throw new NotImplementedException();
+            var oldPhoto = await GetPhotoByIdAsync(editPhotoVM.PhotoId);
+            if (oldPhoto == null)
+            {
+                return false;
+            }
+
+            var newPhotoUpload = await _cloudService.AddPhotoAsync(editPhotoVM.NewImage);
+            if (newPhotoUpload.Error != null)
+            {
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(oldPhoto.ImageUrl))
+            {
+                await _cloudService.DeletePhotoAsync(oldPhoto.ImageUrl);
+            }
+
+            var newPhoto = new Photo
+            {
+                Id = editPhotoVM.PhotoId,
+                Title = editPhotoVM.Title,
+                Description = editPhotoVM.Description,
+                ImageUrl = newPhotoUpload.Uri.ToString(),
+                Category = editPhotoVM.Category,
+                User = await _context.AppUsers.FirstOrDefaultAsync(u => u.Id == editPhotoVM.CurrentUserId)
+
+            };
+
+            _context.Photos.Update(newPhoto);
+            _context.SaveChanges();
+            return true;
+
         }
     }
 }

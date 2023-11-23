@@ -151,17 +151,32 @@ namespace SocialPhotoAppMVC.Controllers
         {
             if (editPhotoVM.CurrentUserId == editPhotoVM.AuthorId)
             {
-                var oldPhoto = await _photoService.GetPhotoByIdAsync(editPhotoVM.PhotoId);
+
+                var result = await _photoService.EditPhotoAsync(editPhotoVM);
+                if (result == false) 
+                {
+                    return View("ErrorPage");
+                }
+                return RedirectToAction("Index");
+  
+            }
+            else
+            {
+                TempData["Error"] = "You are not authorized to edit this photo.";
+                return View("ErrorPage");
+            }
+        }
+    }
+
+    /*                var oldPhoto = await _photoService.GetPhotoByIdAsync(editPhotoVM.PhotoId);
                 if (oldPhoto == null)
                 {
-                    TempData["Error"] = "Photo was not found.";
                     return View("ErrorPage");
                 }
 
                 var newPhotoUpload = await _cloudService.AddPhotoAsync(editPhotoVM.NewImage);
                 if (newPhotoUpload.Error != null)
                 {
-                    TempData["Error"] = "New photo was not uploaded";
                     return View(editPhotoVM);
                 }
 
@@ -183,15 +198,5 @@ namespace SocialPhotoAppMVC.Controllers
 
                 _context.Photos.Update(newPhoto);
                 _context.SaveChanges();
-                return RedirectToAction("Index");
-  
-            }
-            else
-            {
-                TempData["Error"] = "You are not authorized to edit this photo.";
-                return View("ErrorPage");
-            }
-        }
-    }
-
+                return RedirectToAction("Index");*/
 }
