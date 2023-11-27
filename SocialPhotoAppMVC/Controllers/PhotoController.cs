@@ -28,7 +28,7 @@ namespace SocialPhotoAppMVC.Controllers
             _context = context;
         }
 
-        [HttpGet]
+        [HttpGet, ActionName("Index")]
         public async Task<IActionResult> Index()
         {
             var recentPhotos = await _photoService.GetAllPhotos();
@@ -51,7 +51,7 @@ namespace SocialPhotoAppMVC.Controllers
             return View(findPhoto);
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         public IActionResult UploadPhoto()
         {
             var currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -60,17 +60,18 @@ namespace SocialPhotoAppMVC.Controllers
         }
 
 
-        [HttpPost, ActionName("UploadPhoto")]
+        [HttpPost, ActionName("UploadPhoto"), Authorize]
         public async Task<IActionResult> UploadPhoto(UploadPhotoVM photoVM)
         {
             if (ModelState.IsValid)
             {
-                bool uploadPhoto = await _photoService.UploadPhoto(photoVM);
-                if (uploadPhoto == true)
+                var uploadPhoto = await _photoService.UploadPhoto(photoVM);
+                if (uploadPhoto.Data == false)
                 {
-                    return RedirectToAction("Index");
+                    TempData["Error"] = $"{uploadPhoto.Message}";
+                    return View(photoVM);
                 }
-                return View(photoVM);
+                return RedirectToAction("Index");
             }
             else
             {
@@ -83,19 +84,20 @@ namespace SocialPhotoAppMVC.Controllers
         public async Task<IActionResult> DeletePhoto(int id)
         {
             string currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            Photo photo = await _photoService.GetPhotoByIdAsync(id);
-            if (photo == null)
+            var photoToRemove = await _photoService.GetPhotoByIdAsync(id);
+            if (photoToRemove.Data == null)
             {
+                TempData["Error"] = $"{photoToRemove.Message}";
                 return View("ErrorPage");
             }
 
             DeletePhotoVM createDeletePhotoVM = new DeletePhotoVM { 
                 UserId = currentUserId, 
-                PhotoOwnerId = photo.User.Id,
+                PhotoOwnerId = photoToRemove.Data.User.Id,
                 PhotoId = id,
-                Title = photo.Title,
-                Description = photo.Description,
-                Category = photo.Category,
+                Title = photoToRemove.Data.Title,
+                Description = photoToRemove.Data.Description,
+                Category = photoToRemove.Data.Category,
             };
 
             return View(createDeletePhotoVM);
@@ -106,13 +108,14 @@ namespace SocialPhotoAppMVC.Controllers
         {
             if (deletePhotoVM.UserId == deletePhotoVM.PhotoOwnerId)
             {
-                bool result = await _photoService.DeletePhotoAsync(deletePhotoVM.PhotoId);
-                if (result == true)
+                var result = await _photoService.DeletePhotoAsync(deletePhotoVM.PhotoId);
+                if (result.Success == true)
                 {
                     return RedirectToAction("Index");
                 }
                 else
                 {
+                    TempData["Error"] = $"{result.Message}";
                     return View("ErrorPage");
                 }
             }
@@ -126,21 +129,22 @@ namespace SocialPhotoAppMVC.Controllers
         public async Task<IActionResult> EditPhoto(int id)
         {
             string currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            Photo photo = await _photoService.GetPhotoByIdAsync(id);
-            if (photo == null)
+            var photoToEdit = await _photoService.GetPhotoByIdAsync(id);
+            if (photoToEdit.Data == null)
             {
+                TempData["Error"] = $"{photoToEdit.Message}";
                 return View("ErrorPage");
             }
 
             var photoVM = new EditPhotoVM
             {
-                PhotoId = photo.Id,
-                Title = photo.Title,
-                Description = photo.Description,
-                ImageUrl = photo.ImageUrl,
-                Category = photo.Category,
+                PhotoId = photoToEdit.Data.Id,
+                Title = photoToEdit.Data.Title,
+                Description = photoToEdit.Data.Description,
+                ImageUrl = photoToEdit.Data.ImageUrl,
+                Category = photoToEdit.Data.Category,
                 CurrentUserId = currentUserId,
-                AuthorId = photo.User.Id,
+                AuthorId = photoToEdit.Data.User.Id,
             };
             return View(photoVM);
         }
@@ -153,7 +157,7 @@ namespace SocialPhotoAppMVC.Controllers
             {
 
                 var result = await _photoService.EditPhotoAsync(editPhotoVM);
-                if (result == false) 
+                if (result.Success == false) 
                 {
                     return View("ErrorPage");
                 }
@@ -167,36 +171,4 @@ namespace SocialPhotoAppMVC.Controllers
             }
         }
     }
-
-    /*                var oldPhoto = await _photoService.GetPhotoByIdAsync(editPhotoVM.PhotoId);
-                if (oldPhoto == null)
-                {
-                    return View("ErrorPage");
-                }
-
-                var newPhotoUpload = await _cloudService.AddPhotoAsync(editPhotoVM.NewImage);
-                if (newPhotoUpload.Error != null)
-                {
-                    return View(editPhotoVM);
-                }
-
-                if (!string.IsNullOrEmpty(oldPhoto.ImageUrl))
-                {
-                    await _cloudService.DeletePhotoAsync(oldPhoto.ImageUrl);
-                }
-
-                var newPhoto = new Photo
-                {
-                    Id = editPhotoVM.PhotoId,
-                    Title = editPhotoVM.Title,
-                    Description = editPhotoVM.Description,
-                    ImageUrl = newPhotoUpload.Uri.ToString(),
-                    Category = editPhotoVM.Category,
-                    User = await _context.AppUsers.FirstOrDefaultAsync(u => u.Id == editPhotoVM.CurrentUserId)
-
-                };
-
-                _context.Photos.Update(newPhoto);
-                _context.SaveChanges();
-                return RedirectToAction("Index");*/
 }

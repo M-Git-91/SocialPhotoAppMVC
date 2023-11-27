@@ -13,7 +13,7 @@
                             <p class="card-text">@item.Description</p>
                             <a asp-controller="Photo" asp-action="PhotoDetail" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">View</a>
                             <a asp-controller="Photo" asp-action="DeletePhoto" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Delete</a>
-                            <a class="btn btn-sm btn-outline-secondary">Edit</a>
+                            <a asp-controller="Photo" asp-action="EditPhoto" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
                         </div>
                     </div>
                 </div>

@@ -16,81 +16,128 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             _cloudService = cloudService;
         }
 
-        public async Task<IEnumerable<Photo>> GetAllPhotos()
+        public async Task<ServiceResponse<IEnumerable<Photo>>> GetAllPhotos()
         {
-            IEnumerable<Photo> result = await _context.Photos.OrderByDescending(p => p.DateCreated).ToListAsync();
-            return result;
+            var photos = await _context.Photos.OrderByDescending(p => p.DateCreated).ToListAsync();
+            var response = new ServiceResponse<IEnumerable<Photo>> 
+            {
+                Data = photos,
+            };
+
+            return response;
         }
 
-        public Task<Photo> GetPhotoByIdAsync(int id)
+        public async Task<ServiceResponse<Photo>> GetPhotoByIdAsync(int id)
         {
-            var result = _context.Photos.AsNoTracking().Include(p => p.User).FirstAsync(p => p.Id == id);
-            return result;
+            var photo = await _context.Photos.AsNoTracking().Include(p => p.User).FirstAsync(p => p.Id == id);
+            var response = new ServiceResponse<Photo> { Data = photo };
+            return response;
         }
 
-        public async Task<IEnumerable<Photo>> GetFeaturedPhotos()
+        public async Task<ServiceResponse<IEnumerable<Photo>>> GetFeaturedPhotos()
         {
-            IEnumerable<Photo> result = await _context.Photos.Where(p => p.IsFeatured == true).ToListAsync();
-            return result;
+            var photos = await _context.Photos.Where(p => p.IsFeatured == true).ToListAsync();
+            var response = new ServiceResponse<IEnumerable<Photo>> { Data = photos};
+            return response;
         }
 
-        public async Task<Photo> GetPhotoDetail(int id)
+        public async Task<ServiceResponse<Photo>> GetPhotoDetail(int id)
         {
-            Photo result = await _context.Photos.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
-            return result;
+            var photo = await _context.Photos.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
+            var response = new ServiceResponse<Photo> { Data = photo };
+
+            if (photo == null) 
+            {
+                response.Success = false;
+                response.Message = "Photo not found.";
+                return response;
+            }
+
+            return response;
         }
 
-        public async Task<bool> UploadPhoto(UploadPhotoVM photoVM)
+        public async Task<ServiceResponse<bool>> UploadPhoto(UploadPhotoVM photoVM)
         {
-            var result = await _cloudService.AddPhotoAsync(photoVM.Image);
+            var response = new ServiceResponse<bool>();
+            
+            var uploadPhoto = await _cloudService.AddPhotoAsync(photoVM.Image);
+            
+            if (uploadPhoto.Error != null)
+            {
+                return NegativeResponse("Photo upload unsuccesful.");
+            }
+
             var photo = new Photo
             {
                 Title = photoVM.Title,
                 Description = photoVM.Description,
-                ImageUrl = result.Url.ToString(),
+                ImageUrl = uploadPhoto.Url.ToString(),
                 Category = photoVM.Category,
                 User = await _context.Users.FirstOrDefaultAsync(u => u.Id == photoVM.UserId),
             };
+
+            if (photo.User == null)
+            {
+                return NegativeResponse("User not found.");
+            }
+
             _context.Photos.Add(photo);
-            _context.SaveChanges();
-            return true;
+            var saveResult = Save();
+
+            if (saveResult == false) {
+                return NegativeResponse("Upload unsuccessful.");
+            }
+
+            return response;
         }
 
-        public async Task<bool> DeletePhotoAsync(int photoId)
+        public async Task<ServiceResponse<bool>> DeletePhotoAsync(int photoId)
         {
+            var response = new ServiceResponse<bool>();
             var photo = await GetPhotoByIdAsync(photoId);
-            if (photo == null)
+            
+            if (photo.Data == null)
             {
-                return false;
+                return NegativeResponse("Photo not found.");
             }
 
-            if (!string.IsNullOrEmpty(photo.ImageUrl))
+            if (!string.IsNullOrEmpty(photo.Data.ImageUrl))
             {
-                await _cloudService.DeletePhotoAsync(photo.ImageUrl);
+                await _cloudService.DeletePhotoAsync(photo.Data.ImageUrl);
             }
 
-            _context.Photos.Remove(photo);
-            _context.SaveChanges();
-            return true;
+            _context.Photos.Remove(photo.Data);
+            var saveResult = Save();
+
+            if (saveResult == false) 
+            {
+                return NegativeResponse("Photo was not removed");
+            }
+
+            response.Data = false;
+            response.Success = true;
+
+            return response;
         }
 
-        public async Task<bool> EditPhotoAsync(EditPhotoVM editPhotoVM)
+        public async Task<ServiceResponse<bool>> EditPhotoAsync(EditPhotoVM editPhotoVM)
         {
+            var response = new ServiceResponse<bool>();
             var oldPhoto = await GetPhotoByIdAsync(editPhotoVM.PhotoId);
             if (oldPhoto == null)
             {
-                return false;
+                return NegativeResponse("Photo not found.");
             }
 
             var newPhotoUpload = await _cloudService.AddPhotoAsync(editPhotoVM.NewImage);
             if (newPhotoUpload.Error != null)
             {
-                return false;
+                return NegativeResponse("Photo upload unsuccessful.");
             }
 
-            if (!string.IsNullOrEmpty(oldPhoto.ImageUrl))
+            if (!string.IsNullOrEmpty(oldPhoto.Data.ImageUrl))
             {
-                await _cloudService.DeletePhotoAsync(oldPhoto.ImageUrl);
+                await _cloudService.DeletePhotoAsync(oldPhoto.Data.ImageUrl);
             }
 
             var newPhoto = new Photo
@@ -98,16 +145,40 @@ namespace SocialPhotoAppMVC.Services.PhotoService
                 Id = editPhotoVM.PhotoId,
                 Title = editPhotoVM.Title,
                 Description = editPhotoVM.Description,
-                ImageUrl = newPhotoUpload.Uri.ToString(),
+                ImageUrl = newPhotoUpload.Url.ToString(),
                 Category = editPhotoVM.Category,
                 User = await _context.AppUsers.FirstOrDefaultAsync(u => u.Id == editPhotoVM.CurrentUserId)
 
             };
 
             _context.Photos.Update(newPhoto);
-            _context.SaveChanges();
-            return true;
+            var saveResult = Save();
+            
+            if (saveResult == false)
+            {
+                return NegativeResponse("Photo was not removed.");
+            }
 
+            response.Data = true;
+            response.Success = true;
+
+            return response;
+
+        }
+
+        private bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
+
+        private ServiceResponse<bool> NegativeResponse(string errorMessage) 
+        {
+            var response = new ServiceResponse<bool>();
+            response.Data = false;
+            response.Success = false;
+            response.Message = $"{errorMessage}";
+            return response;
         }
     }
 }

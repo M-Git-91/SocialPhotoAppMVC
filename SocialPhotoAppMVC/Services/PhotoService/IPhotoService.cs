@@ -4,12 +4,12 @@ namespace SocialPhotoAppMVC.Services.PhotoService
 {
     public interface IPhotoService
     {
-        Task<IEnumerable<Photo>> GetAllPhotos();
-        Task<Photo> GetPhotoByIdAsync(int id);
-        Task<IEnumerable<Photo>> GetFeaturedPhotos();
-        Task<Photo> GetPhotoDetail(int id);
-        Task<bool> UploadPhoto(UploadPhotoVM photoVM);
-        Task<bool> DeletePhotoAsync(int id);
-        Task<bool> EditPhotoAsync(EditPhotoVM editPhotoVM);
+        Task<ServiceResponse<IEnumerable<Photo>>> GetAllPhotos();
+        Task<ServiceResponse<Photo>> GetPhotoByIdAsync(int id);
+        Task<ServiceResponse<IEnumerable<Photo>>> GetFeaturedPhotos();
+        Task<ServiceResponse<Photo>> GetPhotoDetail(int id);
+        Task<ServiceResponse<bool>> UploadPhoto(UploadPhotoVM photoVM);
+        Task<ServiceResponse<bool>> DeletePhotoAsync(int id);
+        Task<ServiceResponse<bool>> EditPhotoAsync(EditPhotoVM editPhotoVM);
     }
 }
