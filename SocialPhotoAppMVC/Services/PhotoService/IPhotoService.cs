@@ -1,10 +1,11 @@
 ﻿using SocialPhotoAppMVC.ViewModels;
+using X.PagedList;
 
 namespace SocialPhotoAppMVC.Services.PhotoService
 {
     public interface IPhotoService
     {
-        Task<ServiceResponse<IEnumerable<Photo>>> GetAllPhotos();
+        Task<ServiceResponse<IPagedList<Photo>>> GetAllPhotos(int? page);
         Task<ServiceResponse<Photo>> GetPhotoByIdAsync(int id);
         Task<ServiceResponse<IEnumerable<Photo>>> GetFeaturedPhotos();
         Task<ServiceResponse<IEnumerable<Photo>>> GetUserPhotos(string currentUserId);

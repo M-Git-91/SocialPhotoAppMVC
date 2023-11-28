@@ -10,6 +10,7 @@ using SocialPhotoAppMVC.ViewModels;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
+using X.PagedList;
 
 namespace SocialPhotoAppMVC.Controllers
 {
@@ -25,9 +26,10 @@ namespace SocialPhotoAppMVC.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page)
         {
-            var recentPhotos = await _photoService.GetAllPhotos();
+            var recentPhotos = await _photoService.GetAllPhotos(page);
+
 
             if (recentPhotos.Success == false)
             {

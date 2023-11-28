@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SocialPhotoAppMVC.Models;
 using SocialPhotoAppMVC.ViewModels;
 using System.Security.Claims;
+using X.PagedList;
 
 namespace SocialPhotoAppMVC.Services.PhotoService
 {
@@ -17,20 +18,22 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             _cloudService = cloudService;
         }
 
-        public async Task<ServiceResponse<IEnumerable<Photo>>> GetAllPhotos()
+        public async Task<ServiceResponse<IPagedList<Photo>>> GetAllPhotos(int? page)
         {
-            var photos = await _context.Photos.OrderByDescending(p => p.DateCreated).ToListAsync();
-            var response = new ServiceResponse<IEnumerable<Photo>> 
-            {
-                Data = photos,
-            };
+            var allPhotos = await _context.Photos.OrderByDescending(p => p.DateCreated).ToListAsync();
+            var response = new ServiceResponse<IPagedList<Photo>>();
 
-            if (photos.Count == 0)
+            if (allPhotos.Count == 0)
             {
                 response.Success = false;
                 response.Message = "No photos were found.";
                 return response;
             }
+
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            var pagedList = await allPhotos.ToPagedListAsync(pageNumber, pageSize);
+            response.Data = pagedList;
 
             return response;
         }
@@ -209,6 +212,18 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             response.Success = false;
             response.Message = $"{errorMessage}";
             return response;
+        }
+
+        private List<Photo> PaginatePhotos(int page, float resultsPerPage, IEnumerable<Photo> cards)
+        {
+            return cards.Skip((page - 1) * (int)resultsPerPage)
+                        .Take((int)resultsPerPage)
+                        .ToList();
+        }
+
+        private double PageCount(IEnumerable<Photo> photos, float resultsPerPage)
+        {
+            return Math.Ceiling(photos.Count() / resultsPerPage);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿@model ServiceResponse<IEnumerable<Photo>>
+﻿@using X.PagedList.Mvc.Core
+@model ServiceResponse<X.PagedList.IPagedList<Photo>>
 @{
     ViewData["Title"] = "Recent Photos";
 }
@@ -20,5 +21,6 @@
                 </div>
             }
         </div>
+        @Html.PagedListPager(Model.Data, page => Url.Action("Index", new { page }))
     </div>
 </div>
