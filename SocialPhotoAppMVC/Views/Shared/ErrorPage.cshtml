@@ -2,4 +2,13 @@
     ViewData["Title"] = "ErrorPage";
 }
 
-<h1>Something went wrong.</h1>
+@if (TempData["Error"] != null)
+{
+    <div class="col-md-12 alert alert-danger">
+        <h2>@TempData["Error"]</h2>
+    </div>
+}
+else
+{
+    <h1>Something went wrong.</h1>
+}

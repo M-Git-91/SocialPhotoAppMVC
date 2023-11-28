@@ -17,21 +17,23 @@ namespace SocialPhotoAppMVC.Controllers
     {
         private readonly IPhotoService _photoService;
         private readonly IHttpContextAccessor _httpContext;
-        private readonly ICloudService _cloudService;
-        private readonly ApplicationDbContext _context;
 
-        public PhotoController(IPhotoService photoService, IHttpContextAccessor httpContext, ICloudService cloudService, ApplicationDbContext context)
+        public PhotoController(IPhotoService photoService, IHttpContextAccessor httpContext)
         {
             _photoService = photoService;
             _httpContext = httpContext;
-            _cloudService = cloudService;
-            _context = context;
         }
 
-        [HttpGet, ActionName("Index")]
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var recentPhotos = await _photoService.GetAllPhotos();
+
+            if (recentPhotos.Success == false)
+            {
+                TempData["Error"] = $"{recentPhotos.Message}";
+                return View("ErrorPage");
+            }
 
             return View(recentPhotos);
         }
@@ -41,14 +43,40 @@ namespace SocialPhotoAppMVC.Controllers
         {
             var featuredPhotos = await _photoService.GetFeaturedPhotos();
 
+            if (featuredPhotos.Success == false)
+            {
+                TempData["Error"] = $"{featuredPhotos.Message}";
+                return View("ErrorPage");
+            }
+
             return View(featuredPhotos);
         }
-        
+
         [HttpGet]
-        public async Task<IActionResult> PhotoDetail(int id) 
+        public async Task<IActionResult> PhotoDetail(int id)
         {
             var findPhoto = await _photoService.GetPhotoDetail(id);
+            if (findPhoto.Success == false)
+            {
+                TempData["Error"] = $"{findPhoto.Message}";
+                return View("ErrorPage");
+            }
+
             return View(findPhoto);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UserPhotos()
+        {
+            var currentUserId = _httpContext.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userPhotos = await _photoService.GetUserPhotos(currentUserId);
+
+            if (userPhotos.Success == false)
+            {
+                TempData["Error"] = $"{userPhotos.Message}";
+                return View("ErrorPage");
+            }
+            return View(userPhotos);
         }
 
         [HttpGet, Authorize]
@@ -66,7 +94,7 @@ namespace SocialPhotoAppMVC.Controllers
             if (ModelState.IsValid)
             {
                 var uploadPhoto = await _photoService.UploadPhoto(photoVM);
-                if (uploadPhoto.Data == false)
+                if (uploadPhoto.Success == false)
                 {
                     TempData["Error"] = $"{uploadPhoto.Message}";
                     return View(photoVM);
@@ -87,7 +115,7 @@ namespace SocialPhotoAppMVC.Controllers
             var photoToRemove = await _photoService.GetPhotoByIdAsync(id);
             if (photoToRemove.Data == null)
             {
-                TempData["Error"] = $"{photoToRemove.Message}";
+                TempData["Error"] = "Photo not found.";
                 return View("ErrorPage");
             }
 
@@ -111,7 +139,7 @@ namespace SocialPhotoAppMVC.Controllers
                 var result = await _photoService.DeletePhotoAsync(deletePhotoVM.PhotoId);
                 if (result.Success == true)
                 {
-                    return RedirectToAction("Index");
+                    return View("Index");
                 }
                 else
                 {
@@ -121,6 +149,7 @@ namespace SocialPhotoAppMVC.Controllers
             }
             else
             {
+                TempData["Error"] = "You are not authorized to delete this photo.";
                 return View("ErrorPage");
             }            
         }

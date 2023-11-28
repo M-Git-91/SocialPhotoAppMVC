@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using SocialPhotoAppMVC.Models;
 using SocialPhotoAppMVC.ViewModels;
 using System.Security.Claims;
 
@@ -24,12 +25,19 @@ namespace SocialPhotoAppMVC.Services.PhotoService
                 Data = photos,
             };
 
+            if (photos.Count == 0)
+            {
+                response.Success = false;
+                response.Message = "No photos were found.";
+                return response;
+            }
+
             return response;
         }
 
         public async Task<ServiceResponse<Photo>> GetPhotoByIdAsync(int id)
         {
-            var photo = await _context.Photos.AsNoTracking().Include(p => p.User).FirstAsync(p => p.Id == id);
+            var photo = await _context.Photos.AsNoTracking().Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
             var response = new ServiceResponse<Photo> { Data = photo };
             return response;
         }
@@ -38,6 +46,14 @@ namespace SocialPhotoAppMVC.Services.PhotoService
         {
             var photos = await _context.Photos.Where(p => p.IsFeatured == true).ToListAsync();
             var response = new ServiceResponse<IEnumerable<Photo>> { Data = photos};
+
+            if (photos.Count == 0)
+            {
+                response.Success = false;
+                response.Message = "No featured photos were found.";
+                return response;
+            }
+
             return response;
         }
 
@@ -46,13 +62,27 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             var photo = await _context.Photos.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
             var response = new ServiceResponse<Photo> { Data = photo };
 
-            if (photo == null) 
+            if (response.Data == null) 
             {
                 response.Success = false;
                 response.Message = "Photo not found.";
                 return response;
             }
 
+            return response;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<Photo>>> GetUserPhotos(string currentUserId)
+        {
+            var userPhotos = await _context.Photos.Where(p => p.User.Id == currentUserId).ToListAsync();
+            var response = new ServiceResponse<IEnumerable<Photo>> { Data = userPhotos };
+
+            if (userPhotos.Count == 0) 
+            {
+                response.Success = false;
+                response.Message = "No photos found.";
+                return response;
+            }
             return response;
         }
 
@@ -87,7 +117,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             if (saveResult == false) {
                 return NegativeResponse("Upload unsuccessful.");
             }
-
+           
             return response;
         }
 

@@ -33,13 +33,5 @@ namespace SocialPhotoAppMVC.Controllers
                 .FirstOrDefaultAsync(p => p.Id == id);
             return View(findUser);
         }
-
-        public async Task<IActionResult> UserPhotos()
-        {
-            var currentUser = _httpContext.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userPhotos = await _context.Photos.Where(p => p.User.Id == currentUser).ToListAsync();
-
-            return View(userPhotos);
-        }
     }
 }

@@ -1,9 +1,9 @@
-﻿@model List<Photo>
+﻿@model ServiceResponse<IEnumerable<Photo>>
 
 <div class="album py-5 bg-light">
     <div class="container">
         <div class="row">
-            @foreach (var item in Model)
+            @foreach (var item in Model.Data)
             {
                 <div class="col-md-4">
                     <div class="card mb-4 box-shadow">
