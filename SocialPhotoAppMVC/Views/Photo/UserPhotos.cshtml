@@ -1,4 +1,5 @@
-﻿@model ServiceResponse<IEnumerable<Photo>>
+﻿@using X.PagedList.Mvc.Core
+@model ServiceResponse<X.PagedList.IPagedList<Photo>>
 
 <div class="album py-5 bg-light">
     <div class="container">
@@ -19,5 +20,6 @@
                 </div>
             }
         </div>
+        @Html.PagedListPager(Model.Data, page => Url.Action("UserPhotos", new { page }))
     </div>
 </div>

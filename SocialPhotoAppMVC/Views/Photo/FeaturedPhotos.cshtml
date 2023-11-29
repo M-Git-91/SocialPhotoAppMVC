@@ -1,4 +1,5 @@
-﻿@model ServiceResponse<IEnumerable<Photo>>
+﻿@using X.PagedList.Mvc.Core
+@model ServiceResponse<X.PagedList.IPagedList<Photo>>
 @{
     ViewData["Title"] = "Featured Photos";
 }
@@ -14,11 +15,12 @@
                         <div class="card-body">
                             <p class="card-text">@item.Title</p>
                             <p class="card-text">@item.Description</p>
-                            <a asp-controller="Photo" asp-action="PhotoDetail" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">View</a>                 
+                            <a asp-controller="Photo" asp-action="PhotoDetail" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">View</a>
                         </div>
                     </div>
                 </div>
             }
         </div>
+        @Html.PagedListPager(Model.Data, page => Url.Action("FeaturedPhotos", new { page }))
     </div>
 </div>

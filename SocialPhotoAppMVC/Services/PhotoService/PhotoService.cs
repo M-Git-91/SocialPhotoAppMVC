@@ -42,20 +42,33 @@ namespace SocialPhotoAppMVC.Services.PhotoService
         {
             var photo = await _context.Photos.AsNoTracking().Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
             var response = new ServiceResponse<Photo> { Data = photo };
+
+            if (photo == null)
+            {
+                response.Success = false;
+                response.Message = "No photo found.";
+                return response;
+            }
+
             return response;
         }
 
-        public async Task<ServiceResponse<IEnumerable<Photo>>> GetFeaturedPhotos()
+        public async Task<ServiceResponse<IPagedList<Photo>>> GetFeaturedPhotos(int? page)
         {
-            var photos = await _context.Photos.Where(p => p.IsFeatured == true).ToListAsync();
-            var response = new ServiceResponse<IEnumerable<Photo>> { Data = photos};
+            var featuredPhotos = await _context.Photos.Where(p => p.IsFeatured == true).ToListAsync();
+            var response = new ServiceResponse<IPagedList<Photo>>();
 
-            if (photos.Count == 0)
+            if (featuredPhotos.Count == 0)
             {
                 response.Success = false;
                 response.Message = "No featured photos were found.";
                 return response;
             }
+
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            var pagedList = await featuredPhotos.ToPagedListAsync(pageNumber, pageSize);
+            response.Data = pagedList;
 
             return response;
         }
@@ -75,10 +88,10 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             return response;
         }
 
-        public async Task<ServiceResponse<IEnumerable<Photo>>> GetUserPhotos(string currentUserId)
+        public async Task<ServiceResponse<IPagedList<Photo>>> GetUserPhotos(string currentUserId, int? page)
         {
             var userPhotos = await _context.Photos.Where(p => p.User.Id == currentUserId).ToListAsync();
-            var response = new ServiceResponse<IEnumerable<Photo>> { Data = userPhotos };
+            var response = new ServiceResponse<IPagedList<Photo>>();
 
             if (userPhotos.Count == 0) 
             {
@@ -86,6 +99,12 @@ namespace SocialPhotoAppMVC.Services.PhotoService
                 response.Message = "No photos found.";
                 return response;
             }
+
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            var pagedList = await userPhotos.ToPagedListAsync(pageNumber, pageSize);
+            response.Data = pagedList;
+
             return response;
         }
 
@@ -212,18 +231,6 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             response.Success = false;
             response.Message = $"{errorMessage}";
             return response;
-        }
-
-        private List<Photo> PaginatePhotos(int page, float resultsPerPage, IEnumerable<Photo> cards)
-        {
-            return cards.Skip((page - 1) * (int)resultsPerPage)
-                        .Take((int)resultsPerPage)
-                        .ToList();
-        }
-
-        private double PageCount(IEnumerable<Photo> photos, float resultsPerPage)
-        {
-            return Math.Ceiling(photos.Count() / resultsPerPage);
         }
     }
 }

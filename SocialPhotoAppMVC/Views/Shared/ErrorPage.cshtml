@@ -1,11 +1,12 @@
-﻿@{
+﻿@model string
+@{
     ViewData["Title"] = "ErrorPage";
 }
 
-@if (TempData["Error"] != null)
+@if (Model != null)
 {
     <div class="col-md-12 alert alert-danger">
-        <h2>@TempData["Error"]</h2>
+        <h2>@Model</h2>
     </div>
 }
 else

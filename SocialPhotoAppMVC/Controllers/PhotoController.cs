@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -30,25 +31,24 @@ namespace SocialPhotoAppMVC.Controllers
         {
             var recentPhotos = await _photoService.GetAllPhotos(page);
 
-
             if (recentPhotos.Success == false)
             {
-                TempData["Error"] = $"{recentPhotos.Message}";
-                return View("ErrorPage");
+                var errorMessage = recentPhotos.Message;
+                return View("ErrorPage", errorMessage);
             }
 
             return View(recentPhotos);
         }
 
         [HttpGet]
-        public async Task<IActionResult> FeaturedPhotos()
+        public async Task<IActionResult> FeaturedPhotos(int? page)
         {
-            var featuredPhotos = await _photoService.GetFeaturedPhotos();
+            var featuredPhotos = await _photoService.GetFeaturedPhotos(page);
 
             if (featuredPhotos.Success == false)
             {
-                TempData["Error"] = $"{featuredPhotos.Message}";
-                return View("ErrorPage");
+                var errorMessage = featuredPhotos.Message;
+                return View("ErrorPage", errorMessage);
             }
 
             return View(featuredPhotos);
@@ -60,23 +60,23 @@ namespace SocialPhotoAppMVC.Controllers
             var findPhoto = await _photoService.GetPhotoDetail(id);
             if (findPhoto.Success == false)
             {
-                TempData["Error"] = $"{findPhoto.Message}";
-                return View("ErrorPage");
+                var errorMessage = findPhoto.Message;
+                return View("ErrorPage", errorMessage);
             }
 
             return View(findPhoto);
         }
 
         [HttpGet]
-        public async Task<IActionResult> UserPhotos()
+        public async Task<IActionResult> UserPhotos(int? page)
         {
             var currentUserId = _httpContext.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userPhotos = await _photoService.GetUserPhotos(currentUserId);
+            var userPhotos = await _photoService.GetUserPhotos(currentUserId, page);
 
             if (userPhotos.Success == false)
             {
-                TempData["Error"] = $"{userPhotos.Message}";
-                return View("ErrorPage");
+                var errorMessage = userPhotos.Message;
+                return View("ErrorPage", errorMessage);
             }
             return View(userPhotos);
         }
@@ -101,13 +101,13 @@ namespace SocialPhotoAppMVC.Controllers
                     TempData["Error"] = $"{uploadPhoto.Message}";
                     return View(photoVM);
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("UserPhotos");
             }
             else
             {
                 ModelState.AddModelError("", "Photo upload unsuccessful.");
-            }
-            return View(photoVM);
+                return View(photoVM);
+            }           
         }
 
         [HttpGet, Authorize]
@@ -115,10 +115,10 @@ namespace SocialPhotoAppMVC.Controllers
         {
             string currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var photoToRemove = await _photoService.GetPhotoByIdAsync(id);
-            if (photoToRemove.Data == null)
+            if (photoToRemove.Success == false)
             {
-                TempData["Error"] = "Photo not found.";
-                return View("ErrorPage");
+                var errorMessage = photoToRemove.Message;
+                return View("ErrorPage", errorMessage);
             }
 
             DeletePhotoVM createDeletePhotoVM = new DeletePhotoVM { 
@@ -141,18 +141,18 @@ namespace SocialPhotoAppMVC.Controllers
                 var result = await _photoService.DeletePhotoAsync(deletePhotoVM.PhotoId);
                 if (result.Success == true)
                 {
-                    return View("Index");
+                    return RedirectToAction("UserPhotos");
                 }
                 else
                 {
-                    TempData["Error"] = $"{result.Message}";
-                    return View("ErrorPage");
+                    var errorMessage = result.Message;
+                    return View("ErrorPage", errorMessage);
                 }
             }
             else
             {
-                TempData["Error"] = "You are not authorized to delete this photo.";
-                return View("ErrorPage");
+                var errorMessage = "You are not authorized to delete this photo.";
+                return View("ErrorPage", errorMessage);
             }            
         }
 
@@ -163,8 +163,8 @@ namespace SocialPhotoAppMVC.Controllers
             var photoToEdit = await _photoService.GetPhotoByIdAsync(id);
             if (photoToEdit.Data == null)
             {
-                TempData["Error"] = $"{photoToEdit.Message}";
-                return View("ErrorPage");
+                var errorMessage = photoToEdit.Message;
+                return View("ErrorPage", errorMessage);
             }
 
             var photoVM = new EditPhotoVM
@@ -190,15 +190,16 @@ namespace SocialPhotoAppMVC.Controllers
                 var result = await _photoService.EditPhotoAsync(editPhotoVM);
                 if (result.Success == false) 
                 {
-                    return View("ErrorPage");
+                    var errorMessage = result.Message;
+                    return View("ErrorPage", errorMessage);
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("UserPhotos");
   
             }
             else
             {
-                TempData["Error"] = "You are not authorized to edit this photo.";
-                return View("ErrorPage");
+                var errorMessage = "You are not authorized to edit this photo.";
+                return View("ErrorPage", errorMessage);
             }
         }
     }
