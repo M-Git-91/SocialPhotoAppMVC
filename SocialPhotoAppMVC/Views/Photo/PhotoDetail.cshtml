@@ -4,7 +4,7 @@
     <!-- Button trigger modal -->
     <section type="button" class="text-center" data-bs-toggle="modal" data-bs-target="#zoomPhoto">
         <section class="bg-dark">
-            <img class="img-fluid pb-3" src="@Model.Data.ImageUrl" alt="Card image cap">
+            <img class="img-fluid pb-3" src="@Model.Data.ImageUrl" alt="Card image cap" width="500">
         </section>
     </section>
     <section class="text-dark bg-light mb-3 m-auto">
@@ -12,14 +12,14 @@
         <h4 class="">Author: @Model.Data.User.NickName</h4>
         <p class="">Description: @Model.Data.Description</p>
         <p class="">Category: @Model.Data.Category</p>
-        <p class="">Upload Date:@Model.Data.DateCreated</p>
+        <p class="">Upload Date: @Model.Data.DateCreated.ToShortDateString()</p>
     </section>
 </div>
 
 <!-- Modal -->
 <div class="modal fade" id="zoomPhoto" tabindex="-1" aria-labelledby="modalZoomedPhoto" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered .modal-dialog-scrollable text-center">
-        <div class="modal-body">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-body modal-content">
             <img src="@Model.Data.ImageUrl" alt="originalSizePhoto" />
         </div>
     </div>
