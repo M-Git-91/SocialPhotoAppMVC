@@ -39,12 +39,33 @@
                                 </ul>
                             </li>
                         }
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Photo" asp-action="FeaturedPhotos">Featured</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Photo" asp-action="Index">Recent Photos</a>
-                        </li>
+
+                        <li class="dropdown">
+                            <div class="nav-link text-dark dropdown-toggle" type="button" id="photos" data-bs-toggle="dropdown" aria-expanded="false">
+                                Photos
+                            </div>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li class="nav-item">
+                                    <a class="dropdown-item text-dark" asp-area="" asp-controller="Photo" asp-action="FeaturedPhotos">Featured</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="dropdown-item text-dark" asp-area="" asp-controller="Photo" asp-action="Index">Recent</a>
+                                </li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            </ul>
+
+                        <li class="dropdown">
+                            <div class="nav-link text-dark dropdown-toggle" type="button" id="albums" data-bs-toggle="dropdown" aria-expanded="false">
+                                Albums
+                            </div>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li class="nav-item">
+                                    <a class="dropdown-item text-dark" asp-area="" asp-controller="Album" asp-action="RecentAlbums">Recent</a>
+                                </li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            </ul>
+
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="ListUsers">Users</a>
                         </li>

@@ -30,7 +30,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
                 return response;
             }
 
-            int pageSize = 5;
+            int pageSize = 6;
             int pageNumber = (page ?? 1);
             var pagedList = await allPhotos.ToPagedListAsync(pageNumber, pageSize);
             response.Data = pagedList;
@@ -65,7 +65,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
                 return response;
             }
 
-            int pageSize = 5;
+            int pageSize = 6;
             int pageNumber = (page ?? 1);
             var pagedList = await featuredPhotos.ToPagedListAsync(pageNumber, pageSize);
             response.Data = pagedList;
@@ -100,7 +100,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
                 return response;
             }
 
-            int pageSize = 5;
+            int pageSize = 6;
             int pageNumber = (page ?? 1);
             var pagedList = await userPhotos.ToPagedListAsync(pageNumber, pageSize);
             response.Data = pagedList;

@@ -14,7 +14,7 @@ namespace SocialPhotoAppMVC.ViewModels
         [Required(ErrorMessage = "Image is required")]
         public IFormFile Image { get; set; }
 
-        [Required, Range(1, int.MaxValue, ErrorMessage = "Category is required")]
+        [Required, Range(0, int.MaxValue, ErrorMessage = "Category is required")]
         public Category Category { get; set; }
         public string UserId { get; set; }
     }

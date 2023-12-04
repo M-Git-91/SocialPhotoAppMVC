@@ -1,0 +1,22 @@
+﻿@using SocialPhotoAppMVC.ViewModels;
+@model CreateAlbumVM
+
+<form method="post" asp-action="CreateAlbum" enctype="multipart/form-data">
+    <input type="hidden" id="UserId" name="UserId" asp-for="UserId"></input>
+    <div class="form-group">
+        <label asp-for="Title">Title</label>
+        <input asp-for="Title" class="form-control" placeholder="Title">
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description">Description</label>
+        <input asp-for="Description" class="form-control" placeholder="Description">
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="CoverArt">CoverArt</label>
+        <input asp-for="CoverArt" type="file" class="form-control">
+        <span asp-validation-for="CoverArt" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
