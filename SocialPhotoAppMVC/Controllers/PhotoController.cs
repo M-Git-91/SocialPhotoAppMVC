@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using SocialPhotoAppMVC.Models;
 using SocialPhotoAppMVC.Services;
 using SocialPhotoAppMVC.Services.AlbumService;
 using SocialPhotoAppMVC.Services.PhotoService;
@@ -88,21 +89,20 @@ namespace SocialPhotoAppMVC.Controllers
         [HttpGet, Authorize]
         public async Task<IActionResult> AddPhotoToAlbum(int id)
         {
-            var currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var photo = await _photoService.GetPhotoByIdAsync(id);
-            var userAlbums = await _context.Albums.Where(p => p.User.Id == currentUserId).ToListAsync();
-
-            var addPhotoToAlbumVM = new AddPhotoToAlbumVM { Photo = photo.Data, AlbumIds = userAlbums.Select(a => a.Id)};
-
-            return View(addPhotoToAlbumVM);
+            var response = await _photoService.AddPhotoToAlbumGET(id);
+            return View(response.Data);
         }
 
-        [HttpPost, ActionName("AddPhotoToAlbum")]
+        [HttpPost, ActionName("AddPhotoToAlbum"), Authorize]
         public async Task<IActionResult> AddPhotoToAlbum(AddPhotoToAlbumVM photoToAlbumVM) 
-        {
-           await _photoService.AddPhotoToAlbum(photoToAlbumVM);
-
-           return RedirectToAction("Index");
+        {         
+            var addPhotoToAlbum = await _photoService.AddPhotoToAlbumPOST(photoToAlbumVM);
+            if (addPhotoToAlbum.Success == false)
+            {
+                TempData["Error"] = $"{addPhotoToAlbum.Message}";
+                return View(photoToAlbumVM);
+            }
+            return RedirectToAction("UserPhotos");
         }
 
 

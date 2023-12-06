@@ -4,6 +4,6 @@
     {
         public Photo Photo { get; set; }
         public int SelectedAlbumId { get; set; }
-        public IEnumerable<int> AlbumIds { get; set; }
+        public IEnumerable<Album> UserAlbums { get; set; }
     }
 }

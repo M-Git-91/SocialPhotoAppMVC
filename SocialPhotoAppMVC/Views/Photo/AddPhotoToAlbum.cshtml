@@ -2,12 +2,13 @@
 @model AddPhotoToAlbumVM
 
 <form method="post" asp-action="AddPhotoToAlbum" enctype="multipart/form-data">
-
-
     <div class="form-group">
         <label asp-for="SelectedAlbumId">Select Album</label>
-        <select asp-for="SelectedAlbumId" asp-items="@(new SelectList(Model.AlbumIds))">
-            <option>select</option>
+        <select asp-for="SelectedAlbumId">
+            @foreach (var album in Model.UserAlbums)
+            {
+                <option value="@album.Id">@album.Title</option>
+            }
         </select>
     </div>
 

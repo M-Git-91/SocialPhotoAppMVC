@@ -11,7 +11,8 @@ namespace SocialPhotoAppMVC.Services.PhotoService
         Task<ServiceResponse<IPagedList<Photo>>> GetFeaturedPhotos(int? page);
         Task<ServiceResponse<IPagedList<Photo>>> GetUserPhotos(string currentUserId, int? page);
         Task<ServiceResponse<Photo>> GetPhotoDetail(int id);
-        Task<ServiceResponse<Album>> AddPhotoToAlbum(AddPhotoToAlbumVM photoToAlbumVM);
+        Task<ServiceResponse<AddPhotoToAlbumVM>> AddPhotoToAlbumGET(int id);
+        Task<ServiceResponse<Album>> AddPhotoToAlbumPOST(AddPhotoToAlbumVM photoToAlbumVM);
         Task<ServiceResponse<bool>> UploadPhoto(UploadPhotoVM photoVM);
         Task<ServiceResponse<bool>> DeletePhotoAsync(int id);
         Task<ServiceResponse<bool>> EditPhotoAsync(EditPhotoVM editPhotoVM);

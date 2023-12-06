@@ -11,11 +11,13 @@ namespace SocialPhotoAppMVC.Services.PhotoService
     {
         private readonly ApplicationDbContext _context;
         private readonly ICloudService _cloudService;
+        private readonly IHttpContextAccessor _httpContext;
 
-        public PhotoService(ApplicationDbContext context, ICloudService cloudService)
+        public PhotoService(ApplicationDbContext context, ICloudService cloudService, IHttpContextAccessor httpContext)
         {
             _context = context;
             _cloudService = cloudService;
+            _httpContext = httpContext;
         }
 
         public async Task<ServiceResponse<IPagedList<Photo>>> GetAllPhotos(int? page)
@@ -109,16 +111,47 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             return response;
         }
 
-        public async Task<ServiceResponse<Album>> AddPhotoToAlbum(AddPhotoToAlbumVM photoToAlbumVM)
+        public async Task<ServiceResponse<AddPhotoToAlbumVM>> AddPhotoToAlbumGET(int id)
+        {
+            var currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var photo = await GetPhotoByIdAsync(id);
+            var userAlbums = await _context.Albums.Where(p => p.User.Id == currentUserId).ToListAsync();
+            var addPhotoToAlbumVM = new AddPhotoToAlbumVM { Photo = photo.Data, UserAlbums = userAlbums };
+
+            var response = new ServiceResponse<AddPhotoToAlbumVM> { Data = addPhotoToAlbumVM};
+            return response;
+        }
+
+        public async Task<ServiceResponse<Album>> AddPhotoToAlbumPOST(AddPhotoToAlbumVM photoToAlbumVM)
         {
             var response = new ServiceResponse<Album>();
             var album = await _context.Albums.FirstOrDefaultAsync(a => a.Id == photoToAlbumVM.SelectedAlbumId);
-            var photo = await _context.Photos.FirstOrDefaultAsync(p => p.Id == photoToAlbumVM.Photo.Id);
+            if (album == null) 
+            {
+                response.Success = false;
+                response.Message = "Album not found.";
+                return response;
+            }
             
+            var photo = await _context.Photos.FirstOrDefaultAsync(p => p.Id == photoToAlbumVM.Photo.Id);
+            if (photo == null)
+            {
+                response.Success = false;
+                response.Message = "Photo not found.";
+                return response;
+            }
+
             album.Photos.Add(photo);
  
             _context.Albums.Update(album);
-            var saveCount = await _context.SaveChangesAsync();
+
+            var saveCount = Save();
+            if ( saveCount == false)
+            {
+                response.Success = false;
+                response.Message = "Photo was not added to the selected album.";
+                return response;
+            }
 
             response.Data = album;
 
