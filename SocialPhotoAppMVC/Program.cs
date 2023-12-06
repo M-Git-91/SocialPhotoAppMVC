@@ -2,6 +2,7 @@ global using SocialPhotoAppMVC.Data;
 global using SocialPhotoAppMVC.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using SocialPhotoAppMVC.Helpers;
 using SocialPhotoAppMVC.Services;
 using SocialPhotoAppMVC.Services.AlbumService;
@@ -12,7 +13,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+{
+    options.UseSqlServer(connectionString);
+    options.EnableSensitiveDataLogging();
+});
+    
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 //Services/Repositories

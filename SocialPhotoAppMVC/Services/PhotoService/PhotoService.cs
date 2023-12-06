@@ -88,6 +88,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             return response;
         }
 
+
         public async Task<ServiceResponse<IPagedList<Photo>>> GetUserPhotos(string currentUserId, int? page)
         {
             var userPhotos = await _context.Photos.Where(p => p.User.Id == currentUserId).ToListAsync();
@@ -104,6 +105,22 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             int pageNumber = (page ?? 1);
             var pagedList = await userPhotos.ToPagedListAsync(pageNumber, pageSize);
             response.Data = pagedList;
+
+            return response;
+        }
+
+        public async Task<ServiceResponse<Album>> AddPhotoToAlbum(AddPhotoToAlbumVM photoToAlbumVM)
+        {
+            var response = new ServiceResponse<Album>();
+            var album = await _context.Albums.FirstOrDefaultAsync(a => a.Id == photoToAlbumVM.SelectedAlbumId);
+            var photo = await _context.Photos.FirstOrDefaultAsync(p => p.Id == photoToAlbumVM.Photo.Id);
+            
+            album.Photos.Add(photo);
+ 
+            _context.Albums.Update(album);
+            var saveCount = await _context.SaveChangesAsync();
+
+            response.Data = album;
 
             return response;
         }

@@ -73,7 +73,7 @@ namespace SocialPhotoAppMVC.Services.AlbumService
 
         public async Task<ServiceResponse<Album>> GetAlbumDetail(int id)
         {
-            var album = await _context.Albums.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
+            var album = await _context.Albums.Include(p => p.User).Include(p => p.Photos).FirstOrDefaultAsync(p => p.Id == id);
             var response = new ServiceResponse<Album> { Data = album };
 
             if (response.Data == null)

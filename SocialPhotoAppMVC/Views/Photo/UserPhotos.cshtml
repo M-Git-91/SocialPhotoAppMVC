@@ -16,6 +16,7 @@
                             <p class="card-text">@item.Description</p>
                             <a asp-controller="Photo" asp-action="DeletePhoto" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Delete</a>
                             <a asp-controller="Photo" asp-action="EditPhoto" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                            <a asp-controller="Photo" asp-action="AddPhotoToAlbum" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">+Album</a>
                         </div>
                     </div>
                 </div>

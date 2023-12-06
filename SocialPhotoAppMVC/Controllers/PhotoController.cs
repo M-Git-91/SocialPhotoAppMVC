@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SocialPhotoAppMVC.Services;
+using SocialPhotoAppMVC.Services.AlbumService;
 using SocialPhotoAppMVC.Services.PhotoService;
 using SocialPhotoAppMVC.ViewModels;
 using System.Net;
@@ -19,11 +20,14 @@ namespace SocialPhotoAppMVC.Controllers
     {
         private readonly IPhotoService _photoService;
         private readonly IHttpContextAccessor _httpContext;
+        private readonly ApplicationDbContext _context;
+        private readonly IAlbumService _albumService;
 
-        public PhotoController(IPhotoService photoService, IHttpContextAccessor httpContext)
+        public PhotoController(IPhotoService photoService, IHttpContextAccessor httpContext, ApplicationDbContext context)
         {
             _photoService = photoService;
             _httpContext = httpContext;
+            _context = context;
         }
 
         [HttpGet]
@@ -80,6 +84,27 @@ namespace SocialPhotoAppMVC.Controllers
             }
             return View(userPhotos);
         }
+
+        [HttpGet, Authorize]
+        public async Task<IActionResult> AddPhotoToAlbum(int id)
+        {
+            var currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var photo = await _photoService.GetPhotoByIdAsync(id);
+            var userAlbums = await _context.Albums.Where(p => p.User.Id == currentUserId).ToListAsync();
+
+            var addPhotoToAlbumVM = new AddPhotoToAlbumVM { Photo = photo.Data, AlbumIds = userAlbums.Select(a => a.Id)};
+
+            return View(addPhotoToAlbumVM);
+        }
+
+        [HttpPost, ActionName("AddPhotoToAlbum")]
+        public async Task<IActionResult> AddPhotoToAlbum(AddPhotoToAlbumVM photoToAlbumVM) 
+        {
+           await _photoService.AddPhotoToAlbum(photoToAlbumVM);
+
+           return RedirectToAction("Index");
+        }
+
 
         [HttpGet, Authorize]
         public IActionResult UploadPhoto()
