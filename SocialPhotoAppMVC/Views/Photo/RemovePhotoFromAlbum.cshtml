@@ -1,0 +1,18 @@
+﻿@using SocialPhotoAppMVC.ViewModels
+@model AddPhotoToAlbumVM
+
+<form method="post" asp-action="RemovePhotoFromAlbum" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="SelectedAlbumId">Select Album</label>
+        <select asp-for="SelectedAlbumId">
+            @foreach (var album in Model.UserAlbums)
+            {
+                <option value="@album.Id">@album.Title</option>
+            }
+        </select>
+    </div>
+
+    <input type="hidden" asp-for="Photo.Id" />
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

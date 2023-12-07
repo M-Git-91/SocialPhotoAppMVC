@@ -90,6 +90,9 @@ namespace SocialPhotoAppMVC.Controllers
         public async Task<IActionResult> AddPhotoToAlbum(int id)
         {
             var response = await _photoService.AddPhotoToAlbumGET(id);
+            if (response.Success == false)
+                return View("ErrorPage", response.Message);
+            
             return View(response.Data);
         }
 
@@ -105,6 +108,12 @@ namespace SocialPhotoAppMVC.Controllers
             return RedirectToAction("UserPhotos");
         }
 
+        [HttpGet, Authorize]
+        public async Task<IActionResult> RemovePhotoFromAlbum(int id) 
+        {
+            var response = await _photoService.RemovePhotoFromAlbumGET(id);
+            return View(response.Data);
+        }
 
         [HttpGet, Authorize]
         public IActionResult UploadPhoto()
@@ -113,7 +122,6 @@ namespace SocialPhotoAppMVC.Controllers
             UploadPhotoVM createUploadPhotoVM = new UploadPhotoVM { UserId = currentUserId };
             return View(createUploadPhotoVM);
         }
-
 
         [HttpPost, ActionName("UploadPhoto"), Authorize]
         public async Task<IActionResult> UploadPhoto(UploadPhotoVM photoVM)
@@ -204,7 +212,6 @@ namespace SocialPhotoAppMVC.Controllers
             };
             return View(photoVM);
         }
-
 
         [HttpPost, ActionName("EditPhoto"), Authorize]
         public async Task<IActionResult> EditPhotoPost(EditPhotoVM editPhotoVM)

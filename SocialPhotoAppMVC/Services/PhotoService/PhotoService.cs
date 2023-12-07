@@ -115,10 +115,17 @@ namespace SocialPhotoAppMVC.Services.PhotoService
         {
             var currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var photo = await GetPhotoByIdAsync(id);
-            var userAlbums = await _context.Albums.Where(p => p.User.Id == currentUserId).ToListAsync();
+            var userAlbums = await _context.Albums.Where(p => p.User.Id == currentUserId && !p.Photos.Contains(photo.Data)).ToListAsync();
             var addPhotoToAlbumVM = new AddPhotoToAlbumVM { Photo = photo.Data, UserAlbums = userAlbums };
 
             var response = new ServiceResponse<AddPhotoToAlbumVM> { Data = addPhotoToAlbumVM};
+
+            if (userAlbums == null || userAlbums.Count == 0)
+            {
+                response.Success = false;
+                response.Message = "No albums avaliable.";
+                return response;
+            }
             return response;
         }
 
@@ -132,7 +139,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
                 response.Message = "Album not found.";
                 return response;
             }
-            
+
             var photo = await _context.Photos.FirstOrDefaultAsync(p => p.Id == photoToAlbumVM.Photo.Id);
             if (photo == null)
             {
@@ -144,7 +151,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             if (album.Photos.Contains(photo)) 
             {
                 response.Success = false;
-                response.Message = "Selected album cannot contain duplicate photos.";
+                response.Message = "Albums cannot contain duplicate photos.";
                 return response;
             }
 
@@ -162,6 +169,17 @@ namespace SocialPhotoAppMVC.Services.PhotoService
 
             response.Data = album;
 
+            return response;
+        }
+
+        public async Task<ServiceResponse<AddPhotoToAlbumVM>> RemovePhotoFromAlbumGET(int id)
+        {
+            var currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var photo = await GetPhotoByIdAsync(id);
+            var userAlbums = await _context.Albums.Where(p => p.User.Id == currentUserId && !p.Photos.Contains(photo.Data)).ToListAsync(); ///////////
+            var addPhotoToAlbumVM = new AddPhotoToAlbumVM { Photo = photo.Data, UserAlbums = userAlbums };
+
+            var response = new ServiceResponse<AddPhotoToAlbumVM> { Data = addPhotoToAlbumVM };
             return response;
         }
 
