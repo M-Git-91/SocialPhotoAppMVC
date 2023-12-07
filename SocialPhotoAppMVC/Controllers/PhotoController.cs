@@ -99,8 +99,8 @@ namespace SocialPhotoAppMVC.Controllers
             var addPhotoToAlbum = await _photoService.AddPhotoToAlbumPOST(photoToAlbumVM);
             if (addPhotoToAlbum.Success == false)
             {
-                TempData["Error"] = $"{addPhotoToAlbum.Message}";
-                return View(photoToAlbumVM);
+                var errorMessage = addPhotoToAlbum.Message;
+                return View("ErrorPage", errorMessage);
             }
             return RedirectToAction("UserPhotos");
         }

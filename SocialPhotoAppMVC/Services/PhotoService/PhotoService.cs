@@ -125,7 +125,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
         public async Task<ServiceResponse<Album>> AddPhotoToAlbumPOST(AddPhotoToAlbumVM photoToAlbumVM)
         {
             var response = new ServiceResponse<Album>();
-            var album = await _context.Albums.FirstOrDefaultAsync(a => a.Id == photoToAlbumVM.SelectedAlbumId);
+            var album = await _context.Albums.Include(a => a.Photos).FirstOrDefaultAsync(a => a.Id == photoToAlbumVM.SelectedAlbumId);
             if (album == null) 
             {
                 response.Success = false;
@@ -138,6 +138,13 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             {
                 response.Success = false;
                 response.Message = "Photo not found.";
+                return response;
+            }
+
+            if (album.Photos.Contains(photo)) 
+            {
+                response.Success = false;
+                response.Message = "Selected album cannot contain duplicate photos.";
                 return response;
             }
 
