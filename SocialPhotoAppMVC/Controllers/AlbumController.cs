@@ -87,5 +87,52 @@ namespace SocialPhotoAppMVC.Controllers
                 return View(albumVM);
             }
         }
+
+        [HttpGet, Authorize]
+        public async Task<IActionResult> DeleteAlbum(int id) 
+        {
+            string currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var albumToRemove = await _albumService.GetAlbumByIdAsync(id);
+            if (albumToRemove.Success == false)
+            {
+                var errorMessage = albumToRemove.Message;
+                return View("ErrorPage", errorMessage);
+            }
+
+            DeleteAlbumVM deleteAlbumVM = new DeleteAlbumVM
+            {
+                UserId = currentUserId,
+                AlbumOwnerId = albumToRemove.Data.User.Id,
+                AlbumId = albumToRemove.Data.Id,
+                Title = albumToRemove.Data.Title,
+                Description = albumToRemove.Data.Description
+            };
+
+            return View(deleteAlbumVM);
+        }
+
+        [HttpPost, Authorize]
+        public async Task<IActionResult> DeleteAlbum(DeleteAlbumVM deleteAlbumVM) 
+        {
+            if (deleteAlbumVM.UserId == deleteAlbumVM.AlbumOwnerId)
+            {
+                var result = await _albumService.DeleteAlbum(deleteAlbumVM.AlbumId);
+                if (result.Success == true)
+                {
+                    return RedirectToAction("UserAlbums");
+                }
+                else
+                {
+                    var errorMessage = result.Message;
+                    return View("ErrorPage", errorMessage);
+                }
+            }
+            else
+            {
+                var errorMessage = "You are not authorized to delete this album.";
+                return View("ErrorPage", errorMessage);
+            }
+        }
+        
     }
 }

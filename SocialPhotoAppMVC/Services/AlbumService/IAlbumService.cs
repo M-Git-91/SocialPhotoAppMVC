@@ -10,7 +10,7 @@ namespace SocialPhotoAppMVC.Services.AlbumService
         Task<ServiceResponse<IPagedList<Album>>> GetUserAlbums(string currentUserId, int? page);
         Task<ServiceResponse<Album>> GetAlbumDetail(int id);
         Task<ServiceResponse<bool>> CreateAlbum(CreateAlbumVM albumVM);
-        Task<ServiceResponse<bool>> DeleteAlbumAsync(int id);
-        Task<ServiceResponse<bool>> EditAlbumAsync(EditAlbumVM editAlbumVM);
+        Task<ServiceResponse<bool>> DeleteAlbum(int albumId); 
+        Task<ServiceResponse<bool>> EditAlbum(EditAlbumVM editAlbumVM); //todo
     }
 }

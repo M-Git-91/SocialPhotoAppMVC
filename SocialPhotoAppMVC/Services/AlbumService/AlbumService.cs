@@ -121,15 +121,40 @@ namespace SocialPhotoAppMVC.Services.AlbumService
             return response;
         }
 
-        public Task<ServiceResponse<bool>> DeleteAlbumAsync(int id)
+        public async Task<ServiceResponse<bool>> DeleteAlbum(int albumId)
+        {
+            var response = new ServiceResponse<bool>();
+            var album = await GetAlbumByIdAsync(albumId);
+
+            if (album.Data == null)
+            {
+                return NegativeResponse("Album not found.");
+            }
+
+            if (!string.IsNullOrEmpty(album.Data.CoverArtUrl))
+            {
+                await _cloudService.DeletePhotoAsync(album.Data.CoverArtUrl);
+            }
+
+            _context.Albums.Remove(album.Data);
+            var saveResult = Save();
+
+            if (saveResult == false)
+            {
+                return NegativeResponse("Album was not removed");
+            }
+
+            response.Data = false;
+            response.Success = true;
+
+            return response;
+        }
+
+        public Task<ServiceResponse<bool>> EditAlbum(EditAlbumVM editAlbumVM)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResponse<bool>> EditAlbumAsync(EditAlbumVM editAlbumVM)
-        {
-            throw new NotImplementedException();
-        }
 
         private bool Save()
         {
