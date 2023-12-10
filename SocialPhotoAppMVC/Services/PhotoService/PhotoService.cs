@@ -258,7 +258,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             return response;
         }
 
-        public async Task<ServiceResponse<bool>> DeletePhotoAsync(int photoId)
+        public async Task<ServiceResponse<bool>> DeletePhoto(int photoId)
         {
             var response = new ServiceResponse<bool>();
             var photo = await GetPhotoByIdAsync(photoId);
@@ -287,7 +287,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             return response;
         }
 
-        public async Task<ServiceResponse<bool>> EditPhotoAsync(EditPhotoVM editPhotoVM)
+        public async Task<ServiceResponse<bool>> EditPhoto(EditPhotoVM editPhotoVM)
         {
             var response = new ServiceResponse<bool>();
             var oldPhoto = await GetPhotoByIdAsync(editPhotoVM.PhotoId);

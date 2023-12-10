@@ -16,7 +16,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
         Task<ServiceResponse<AddPhotoToAlbumVM>> RemovePhotoFromAlbumGET(int id);
         Task<ServiceResponse<Album>> RemovePhotoFromAlbumPOST(AddPhotoToAlbumVM photoToAlbumVM);
         Task<ServiceResponse<bool>> UploadPhoto(UploadPhotoVM photoVM);
-        Task<ServiceResponse<bool>> DeletePhotoAsync(int id);
-        Task<ServiceResponse<bool>> EditPhotoAsync(EditPhotoVM editPhotoVM);
+        Task<ServiceResponse<bool>> DeletePhoto(int id);
+        Task<ServiceResponse<bool>> EditPhoto(EditPhotoVM editPhotoVM);
     }
 }

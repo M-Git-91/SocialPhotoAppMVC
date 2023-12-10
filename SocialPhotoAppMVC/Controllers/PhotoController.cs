@@ -186,7 +186,7 @@ namespace SocialPhotoAppMVC.Controllers
         {
             if (deletePhotoVM.UserId == deletePhotoVM.PhotoOwnerId)
             {
-                var result = await _photoService.DeletePhotoAsync(deletePhotoVM.PhotoId);
+                var result = await _photoService.DeletePhoto(deletePhotoVM.PhotoId);
                 if (result.Success == true)
                 {
                     return RedirectToAction("UserPhotos");
@@ -233,15 +233,21 @@ namespace SocialPhotoAppMVC.Controllers
         {
             if (editPhotoVM.CurrentUserId == editPhotoVM.AuthorId)
             {
-
-                var result = await _photoService.EditPhotoAsync(editPhotoVM);
-                if (result.Success == false) 
+                if (ModelState.IsValid)
                 {
-                    var errorMessage = result.Message;
-                    return View("ErrorPage", errorMessage);
+                    var result = await _photoService.EditPhoto(editPhotoVM);
+                    if (result.Success == false)
+                    {
+                        var errorMessage = result.Message;
+                        return View("ErrorPage", errorMessage);
+                    }
+                    return RedirectToAction("UserPhotos");
                 }
-                return RedirectToAction("UserPhotos");
-  
+                else
+                {
+                    ModelState.AddModelError("", "Photo edit unsuccessful.");
+                    return View(editPhotoVM);
+                }  
             }
             else
             {
