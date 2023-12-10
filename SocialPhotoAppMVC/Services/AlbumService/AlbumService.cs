@@ -150,11 +150,50 @@ namespace SocialPhotoAppMVC.Services.AlbumService
             return response;
         }
 
-        public Task<ServiceResponse<bool>> EditAlbum(EditAlbumVM editAlbumVM)
+        public async Task<ServiceResponse<bool>> EditAlbum(EditAlbumVM editAlbumVM)
         {
-            throw new NotImplementedException();
-        }
+            var response = new ServiceResponse<bool>();
+            var oldAlbum = await GetAlbumByIdAsync(editAlbumVM.AlbumId);
+            if (oldAlbum == null)
+            {
+                return NegativeResponse("Album not found.");
+            }
 
+            var newCoverUpload = await _cloudService.AddPhotoAsync(editAlbumVM.NewCoverArt);
+            if (newCoverUpload.Error != null)
+            {
+                return NegativeResponse("Cover art upload unsuccessful.");
+            }
+
+            if (!string.IsNullOrEmpty(oldAlbum.Data.CoverArtUrl))
+            {
+                await _cloudService.DeletePhotoAsync(oldAlbum.Data.CoverArtUrl);
+            }
+
+            var newAlbum = new Album
+            {
+                Id = editAlbumVM.AlbumId,
+                Title = editAlbumVM.Title,
+                Description = editAlbumVM.Description,
+                CoverArtUrl = newCoverUpload.Url.ToString(),
+                User = await _context.AppUsers.FirstOrDefaultAsync(u => u.Id == editAlbumVM.CurrentUserId)
+
+            };
+
+            _context.Albums.Update(newAlbum);
+            var saveResult = Save();
+
+            if (saveResult == false)
+            {
+                return NegativeResponse("Album was not edited.");
+            }
+
+            response.Data = true;
+            response.Success = true;
+
+            return response;
+
+        }
 
         private bool Save()
         {
@@ -170,5 +209,5 @@ namespace SocialPhotoAppMVC.Services.AlbumService
             response.Message = $"{errorMessage}";
             return response;
         }
-    }
+    }   
 }

@@ -29,13 +29,20 @@
                                 </div>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                     <li class="nav-item">
+                                        <a class="dropdown-item text-dark" asp-area="" asp-controller="Photo" asp-action="UserPhotos">My Photos</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-dark" asp-controller="Album" asp-action="UserAlbums">My Albums</a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a class="dropdown-item text-dark" asp-area="" asp-controller="Photo" asp-action="UploadPhoto">Upload photo</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="dropdown-item text-dark" asp-area="" asp-controller="Photo" asp-action="UserPhotos">My Photos</a>
+                                        <a class="dropdown-item text-dark" asp-area="" asp-controller="Album" asp-action="CreateAlbum">Create Album</a>
                                     </li>
-                                    <li><a class="dropdown-item text-dark" asp-controller="Album" asp-action="UserAlbums">My Albums</a></li>
-                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">Something else here</a>
+                                    </li>
                                 </ul>
                             </li>
                         }

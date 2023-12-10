@@ -133,6 +133,56 @@ namespace SocialPhotoAppMVC.Controllers
                 return View("ErrorPage", errorMessage);
             }
         }
-        
+
+        [HttpGet, Authorize]
+        public async Task<IActionResult> EditAlbum(int id) 
+        {
+            string currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var albumToEdit = await _albumService.GetAlbumByIdAsync(id);
+            if (albumToEdit.Data == null)
+            {
+                var errorMessage = albumToEdit.Message;
+                return View("ErrorPage", errorMessage);
+            }
+
+            EditAlbumVM albumVM = new EditAlbumVM
+            {
+                AlbumId = albumToEdit.Data.Id,
+                Title = albumToEdit.Data.Title,
+                Description = albumToEdit.Data.Description,
+                CoverArtUrl = albumToEdit.Data.CoverArtUrl,
+                CurrentUserId = currentUserId,
+                AuthorId = albumToEdit.Data.User.Id,
+            };
+            return View(albumVM);
+        }
+
+        [HttpPost, ActionName("EditAlbum"), Authorize]
+        public async Task<IActionResult> EditAlbumPost(EditAlbumVM editAlbumVM) 
+        {
+            if (editAlbumVM.CurrentUserId == editAlbumVM.AuthorId)
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _albumService.EditAlbum(editAlbumVM);
+                    if (result.Success == false)
+                    {
+                        var errorMessage = result.Message;
+                        return View("ErrorPage", errorMessage);
+                    }
+                    return RedirectToAction("UserAlbums");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Album edit unsuccessful.");
+                    return View(editAlbumVM);
+                }
+            }
+            else
+            {
+                var errorMessage = "You are not authorized to edit this album.";
+                return View("ErrorPage", errorMessage);
+            }
+        }
     }
 }

@@ -11,6 +11,6 @@ namespace SocialPhotoAppMVC.Services.AlbumService
         Task<ServiceResponse<Album>> GetAlbumDetail(int id);
         Task<ServiceResponse<bool>> CreateAlbum(CreateAlbumVM albumVM);
         Task<ServiceResponse<bool>> DeleteAlbum(int albumId); 
-        Task<ServiceResponse<bool>> EditAlbum(EditAlbumVM editAlbumVM); //todo
+        Task<ServiceResponse<bool>> EditAlbum(EditAlbumVM editAlbumVM);
     }
 }
