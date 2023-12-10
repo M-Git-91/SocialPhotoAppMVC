@@ -112,7 +112,22 @@ namespace SocialPhotoAppMVC.Controllers
         public async Task<IActionResult> RemovePhotoFromAlbum(int id) 
         {
             var response = await _photoService.RemovePhotoFromAlbumGET(id);
+            if (response.Success == false)
+                return View("ErrorPage", response.Message);
+
             return View(response.Data);
+        }
+
+        [HttpPost, ActionName("RemovePhotoFromAlbum"), Authorize]
+        public async Task<IActionResult> RemovePhotoFromAlbum(AddPhotoToAlbumVM photoToAlbumVM)
+        {
+            var addPhotoToAlbum = await _photoService.RemovePhotoFromAlbumPOST(photoToAlbumVM);
+            if (addPhotoToAlbum.Success == false)
+            {
+                var errorMessage = addPhotoToAlbum.Message;
+                return View("ErrorPage", errorMessage);
+            }
+            return RedirectToAction("UserPhotos");
         }
 
         [HttpGet, Authorize]

@@ -176,10 +176,50 @@ namespace SocialPhotoAppMVC.Services.PhotoService
         {
             var currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var photo = await GetPhotoByIdAsync(id);
-            var userAlbums = await _context.Albums.Where(p => p.User.Id == currentUserId && !p.Photos.Contains(photo.Data)).ToListAsync(); ///////////
+            var userAlbums = await _context.Albums.Where(p => p.User.Id == currentUserId && p.Photos.Contains(photo.Data)).ToListAsync();
             var addPhotoToAlbumVM = new AddPhotoToAlbumVM { Photo = photo.Data, UserAlbums = userAlbums };
 
             var response = new ServiceResponse<AddPhotoToAlbumVM> { Data = addPhotoToAlbumVM };
+
+            if (userAlbums == null || userAlbums.Count == 0)
+            {
+                response.Success = false;
+                response.Message = "No albums avaliable.";
+                return response;
+            }
+            return response;
+        }
+
+        public async Task<ServiceResponse<Album>> RemovePhotoFromAlbumPOST(AddPhotoToAlbumVM photoToAlbumVM)
+        {
+            var response = new ServiceResponse<Album>();           
+            var album = await _context.Albums.Include(a => a.Photos).FirstOrDefaultAsync(a => a.Id == photoToAlbumVM.SelectedAlbumId);
+            if (album == null)
+            {
+                response.Success = false;
+                response.Message = "Album not found.";
+                return response;
+            }
+
+            var photo = await _context.Photos.FirstOrDefaultAsync(p => p.Id == photoToAlbumVM.Photo.Id);
+            if (photo == null)
+            {
+                response.Success = false;
+                response.Message = "Photo not found.";
+                return response;
+            }
+
+            album.Photos.Remove(photo);
+            _context.Albums.Update(album);
+            var saveCount = Save();
+            if (saveCount == false)
+            {
+                response.Success = false;
+                response.Message = "Photo was not removed from the selected album.";
+                return response;
+            }
+
+            response.Data = album;
             return response;
         }
 
