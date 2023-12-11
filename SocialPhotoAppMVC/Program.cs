@@ -7,6 +7,7 @@ using SocialPhotoAppMVC.Helpers;
 using SocialPhotoAppMVC.Services;
 using SocialPhotoAppMVC.Services.AlbumService;
 using SocialPhotoAppMVC.Services.PhotoService;
+using SocialPhotoAppMVC.Services.SearchService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddScoped<IPhotoService, PhotoService >();
 builder.Services.AddScoped<ICloudService, CloudService>();
 builder.Services.AddScoped<IAlbumService, AlbumService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
 //Identity
 builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();

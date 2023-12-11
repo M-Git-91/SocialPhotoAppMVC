@@ -28,7 +28,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             if (allPhotos.Count == 0)
             {
                 response.Success = false;
-                response.Message = "No photos were found.";
+                response.Message = "No photos found.";
                 return response;
             }
 

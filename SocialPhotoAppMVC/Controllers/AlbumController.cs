@@ -69,7 +69,7 @@ namespace SocialPhotoAppMVC.Controllers
 
 
         [HttpPost, ActionName("CreateAlbum"), Authorize]
-        public async Task<IActionResult> CreateAlbum(CreateAlbumVM albumVM)
+        public async Task<IActionResult> CreateAlbumPost(CreateAlbumVM albumVM)
         {
             if (ModelState.IsValid)
             {
@@ -111,8 +111,8 @@ namespace SocialPhotoAppMVC.Controllers
             return View(deleteAlbumVM);
         }
 
-        [HttpPost, Authorize]
-        public async Task<IActionResult> DeleteAlbum(DeleteAlbumVM deleteAlbumVM) 
+        [HttpPost, ActionName("DeleteAlbum"), Authorize]
+        public async Task<IActionResult> DeleteAlbumPost(DeleteAlbumVM deleteAlbumVM) 
         {
             if (deleteAlbumVM.UserId == deleteAlbumVM.AlbumOwnerId)
             {
