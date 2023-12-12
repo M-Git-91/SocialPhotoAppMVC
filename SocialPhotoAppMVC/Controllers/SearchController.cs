@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SocialPhotoAppMVC.Enums;
 using SocialPhotoAppMVC.Services.SearchService;
+using SocialPhotoAppMVC.ViewModels;
 
 namespace SocialPhotoAppMVC.Controllers
 {
@@ -14,7 +15,12 @@ namespace SocialPhotoAppMVC.Controllers
             _searchService = searchService;
         }
 
-        public async Task<IActionResult> SearchPhotos(string searchInput, int? page)
+        public IActionResult SearchPhotoIndex() 
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> SearchPhotos(SearchPhotoVM searchInput, int? page)
         {
             var response = await _searchService.SearchPhotos(searchInput, page);
 
@@ -24,10 +30,10 @@ namespace SocialPhotoAppMVC.Controllers
                 return View("ErrorPage", errorMessage);
             }
 
-            return View();
+            return View(response);
         }
 
-        public async Task<IActionResult> SearchPhotosByTitle(string searchInput, int? page) 
+        public async Task<IActionResult> SearchPhotosByTitle(SearchPhotoVM searchInput, int? page) 
         {
             var response = await _searchService.SearchPhotosByTitle(searchInput, page);
 
@@ -37,10 +43,10 @@ namespace SocialPhotoAppMVC.Controllers
                 return View("ErrorPage", errorMessage);
             }
 
-            return View();
+            return View("PhotoSearchResult", response);
         }
 
-        public async Task<IActionResult> SearchPhotosByDescription(string searchInput, int? page)
+        public async Task<IActionResult> SearchPhotosByDescription(SearchPhotoVM searchInput, int? page)
         {
             var response = await _searchService.SearchPhotosByDescription(searchInput, page);
 
@@ -50,7 +56,7 @@ namespace SocialPhotoAppMVC.Controllers
                 return View("ErrorPage", errorMessage);
             }
 
-            return View();
+            return View("PhotoSearchResult", response);
         }
 
         public async Task<IActionResult> SearchPhotosByCategory(Category category, int? page)
@@ -63,7 +69,7 @@ namespace SocialPhotoAppMVC.Controllers
                 return View("ErrorPage", errorMessage);
             }
 
-            return View();
+            return View("PhotoSearchResult" ,response);
         }
     }
 }

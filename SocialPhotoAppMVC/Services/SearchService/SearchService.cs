@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialPhotoAppMVC.Enums;
+using SocialPhotoAppMVC.ViewModels;
+using System.Linq;
 using X.PagedList;
 
 namespace SocialPhotoAppMVC.Services.SearchService
@@ -13,9 +15,15 @@ namespace SocialPhotoAppMVC.Services.SearchService
             _context = context;
         }
 
-        public async Task<ServiceResponse<IPagedList<Photo>>> SearchPhotos(string searchText, int? page)
+        public async Task<ServiceResponse<IPagedList<Photo>>> SearchPhotos(SearchPhotoVM searchInput, int? page)
         {
-            var foundPhotos = await _context.Photos.Where(p => p.Title.Contains(searchText) || p.Description.Contains(searchText)).ToListAsync();
+            var foundPhotos = await _context.Photos
+                .Include(p => p.Title)
+                .Include(p => p.Description)
+                .Where(p => p.Title
+                .Contains(searchInput.Title) || p.Description.Contains(searchInput.Description))
+                .ToListAsync();
+
             var response = new ServiceResponse<IPagedList<Photo>>();
 
             if (foundPhotos.Count == 0)
@@ -31,9 +39,9 @@ namespace SocialPhotoAppMVC.Services.SearchService
             return response;
         }
 
-        public async Task<ServiceResponse<IPagedList<Photo>>> SearchPhotosByTitle(string searchText, int? page)
+        public async Task<ServiceResponse<IPagedList<Photo>>> SearchPhotosByTitle(SearchPhotoVM searchInput, int? page)
         {
-            var foundPhotos = await _context.Photos.Where(p => p.Title.Contains(searchText)).ToListAsync();
+            var foundPhotos = await _context.Photos.Where(p => p.Title.Contains(searchInput.Title)).ToListAsync();
             var response = new ServiceResponse<IPagedList<Photo>>();
 
             if (foundPhotos.Count == 0)
@@ -49,9 +57,9 @@ namespace SocialPhotoAppMVC.Services.SearchService
             return response;
         }
 
-        public async Task<ServiceResponse<IPagedList<Photo>>> SearchPhotosByDescription(string searchText, int? page)
+        public async Task<ServiceResponse<IPagedList<Photo>>> SearchPhotosByDescription(SearchPhotoVM searchInput, int? page)
         {
-            var foundPhotos = await _context.Photos.Where(p => p.Description.Contains(searchText)).ToListAsync();
+            var foundPhotos = await _context.Photos.Where(p => p.Description.Contains(searchInput.Description)).ToListAsync();
             var response = new ServiceResponse<IPagedList<Photo>>();
 
             if (foundPhotos.Count == 0)
@@ -69,7 +77,7 @@ namespace SocialPhotoAppMVC.Services.SearchService
 
         public async Task<ServiceResponse<IPagedList<Photo>>> SearchPhotosByCategory(Category category, int? page)
         {
-            var foundPhotos = await _context.Photos.Include(p => p.Category).Where(p => p.Category == category).ToListAsync();
+            var foundPhotos = await _context.Photos.Where(p => p.Category == category).ToListAsync();
             var response = new ServiceResponse<IPagedList<Photo>>();
 
             if (foundPhotos.Count == 0)
