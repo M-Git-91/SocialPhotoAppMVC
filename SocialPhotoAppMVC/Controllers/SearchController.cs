@@ -30,38 +30,17 @@ namespace SocialPhotoAppMVC.Controllers
                 return View("ErrorPage", errorMessage);
             }
 
-            return View(response);
-        }
-
-        public async Task<IActionResult> SearchPhotosByTitle(SearchPhotoVM searchInput, int? page) 
-        {
-            var response = await _searchService.SearchPhotosByTitle(searchInput, page);
-
-            if (response.Success == false)
-            {
-                var errorMessage = response.Message;
-                return View("ErrorPage", errorMessage);
-            }
-
             return View("PhotoSearchResult", response);
         }
 
-        public async Task<IActionResult> SearchPhotosByDescription(SearchPhotoVM searchInput, int? page)
+        public IActionResult SearchAlbumIndex()
         {
-            var response = await _searchService.SearchPhotosByDescription(searchInput, page);
-
-            if (response.Success == false)
-            {
-                var errorMessage = response.Message;
-                return View("ErrorPage", errorMessage);
-            }
-
-            return View("PhotoSearchResult", response);
+            return View();
         }
 
-        public async Task<IActionResult> SearchPhotosByCategory(Category category, int? page)
+        public async Task<IActionResult> SearchAlbums(SearchAlbumVM searchInput, int? page)
         {
-            var response = await _searchService.SearchPhotosByCategory(category, page);
+            var response = await _searchService.SearchAlbums(searchInput, page);
 
             if (response.Success == false)
             {
@@ -69,7 +48,7 @@ namespace SocialPhotoAppMVC.Controllers
                 return View("ErrorPage", errorMessage);
             }
 
-            return View("PhotoSearchResult" ,response);
+            return View("AlbumsSearchResult", response);
         }
     }
 }

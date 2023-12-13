@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SocialPhotoAppMVC.Enums;
 using SocialPhotoAppMVC.ViewModels;
 using System.Linq;
@@ -15,79 +16,53 @@ namespace SocialPhotoAppMVC.Services.SearchService
             _context = context;
         }
 
-        public async Task<ServiceResponse<IPagedList<Photo>>> SearchPhotos(SearchPhotoVM searchInput, int? page)
+        public async Task<ServiceResponse<IPagedList<Photo>>> SearchPhotos(SearchPhotoVM? searchInput, int? page)
         {
             var foundPhotos = await _context.Photos
-                .Include(p => p.Title)
-                .Include(p => p.Description)
-                .Where(p => p.Title
-                .Contains(searchInput.Title) || p.Description.Contains(searchInput.Description))
+                            .Where(p => (searchInput.Title == null || p.Title.Contains(searchInput.Title)) &&
+                            (searchInput.Description == null || p.Description.Contains(searchInput.Description)) &&
+                            (searchInput.Category == null || p.Category == searchInput.Category))
+                            .ToListAsync();
+
+
+            var response = new ServiceResponse<IPagedList<Photo>>();
+
+            if (foundPhotos.Count == 0)
+            {
+                response.Success = false;
+                response.Message = "No photos found.";
+                return response;
+            }
+
+            int pageSize = 6;
+            int pageNumber = (page ?? 1);
+            var pagedList = await foundPhotos.ToPagedListAsync(pageNumber, pageSize);
+            response.Data = pagedList;
+
+            return response;
+        }
+
+        public async Task<ServiceResponse<IPagedList<Album>>> SearchAlbums(SearchAlbumVM searchInput, int? page)
+        {
+            var foundAlbums = await _context.Albums.Include(a => a.User)
+                .Where(p => (searchInput.Title == null || p.Title.Contains(searchInput.Title)) &&
+                (searchInput.Description == null || p.Description.Contains(searchInput.Description))
+                && (searchInput.Username == null || p.User.NickName.Contains(searchInput.Username)))
                 .ToListAsync();
 
-            var response = new ServiceResponse<IPagedList<Photo>>();
 
-            if (foundPhotos.Count == 0)
+            var response = new ServiceResponse<IPagedList<Album>>();
+
+            if (foundAlbums.Count == 0)
             {
                 response.Success = false;
-                response.Message = "No photos found.";
+                response.Message = "No albums found.";
                 return response;
             }
 
-            var pagedList = await PaginateListOfPhotos(foundPhotos, page, 6);
-            response.Data = pagedList;
-
-            return response;
-        }
-
-        public async Task<ServiceResponse<IPagedList<Photo>>> SearchPhotosByTitle(SearchPhotoVM searchInput, int? page)
-        {
-            var foundPhotos = await _context.Photos.Where(p => p.Title.Contains(searchInput.Title)).ToListAsync();
-            var response = new ServiceResponse<IPagedList<Photo>>();
-
-            if (foundPhotos.Count == 0)
-            {
-                response.Success = false;
-                response.Message = "No photos found.";
-                return response;
-            }
-
-            var pagedList = await PaginateListOfPhotos(foundPhotos, page, 6);
-            response.Data = pagedList;
-
-            return response;
-        }
-
-        public async Task<ServiceResponse<IPagedList<Photo>>> SearchPhotosByDescription(SearchPhotoVM searchInput, int? page)
-        {
-            var foundPhotos = await _context.Photos.Where(p => p.Description.Contains(searchInput.Description)).ToListAsync();
-            var response = new ServiceResponse<IPagedList<Photo>>();
-
-            if (foundPhotos.Count == 0)
-            {
-                response.Success = false;
-                response.Message = "No photos found.";
-                return response;
-            }
-
-            var pagedList = await PaginateListOfPhotos(foundPhotos, page, 6);
-            response.Data = pagedList;
-
-            return response;
-        }
-
-        public async Task<ServiceResponse<IPagedList<Photo>>> SearchPhotosByCategory(Category category, int? page)
-        {
-            var foundPhotos = await _context.Photos.Where(p => p.Category == category).ToListAsync();
-            var response = new ServiceResponse<IPagedList<Photo>>();
-
-            if (foundPhotos.Count == 0)
-            {
-                response.Success = false;
-                response.Message = "No photos found.";
-                return response;
-            }
-
-            var pagedList = await PaginateListOfPhotos(foundPhotos, page, 6);
+            int pageSize = 6;
+            int pageNumber = (page ?? 1);
+            var pagedList = await foundAlbums.ToPagedListAsync(pageNumber, pageSize);
             response.Data = pagedList;
 
             return response;

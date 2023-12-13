@@ -8,8 +8,6 @@ namespace SocialPhotoAppMVC.Services.SearchService
     public interface ISearchService
     {
         Task<ServiceResponse<IPagedList<Photo>>> SearchPhotos(SearchPhotoVM searchInput, int? page);
-        Task<ServiceResponse<IPagedList<Photo>>> SearchPhotosByTitle(SearchPhotoVM searchInput, int? page);
-        Task<ServiceResponse<IPagedList<Photo>>> SearchPhotosByDescription(SearchPhotoVM searchInput, int? page);
-        Task<ServiceResponse<IPagedList<Photo>>> SearchPhotosByCategory(Category category, int? page);
+        Task<ServiceResponse<IPagedList<Album>>> SearchAlbums(SearchAlbumVM searchInput, int? page);
     }
 }

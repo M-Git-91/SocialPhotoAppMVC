@@ -76,12 +76,6 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="ListUsers">Users</a>
                         </li>
-                        <li>
-                            <form class="d-flex">
-                                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                                <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i></button>
-                            </form>
-                        </li>
 
                         <li class="dropdown">
                             <div class="nav-link text-dark dropdown-toggle" type="button" id="search" data-bs-toggle="dropdown" aria-expanded="false">
@@ -89,7 +83,10 @@
                             </div>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                 <li class="nav-item">
-                                    <a class="dropdown-item text-dark" asp-area="" asp-controller="Search" asp-action="SearchPhotoIndex">Photos</a>
+                                    <a class="dropdown-item text-dark" asp-controller="Search" asp-action="SearchPhotoIndex">Photos</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item text-dark" asp-controller="Search" asp-action="SearchAlbumIndex">Albums</a>
                                 </li>
                                 <li><a class="dropdown-item" href="#">Something else here</a></li>
                             </ul>
