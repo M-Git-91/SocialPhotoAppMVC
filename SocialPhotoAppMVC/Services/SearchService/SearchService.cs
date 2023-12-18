@@ -50,13 +50,32 @@ namespace SocialPhotoAppMVC.Services.SearchService
                 && (searchInput.Username == null || p.User.NickName.Contains(searchInput.Username)))
                 .ToListAsync();
 
-
             var response = new ServiceResponse<IPagedList<Album>>();
 
             if (foundAlbums.Count == 0)
             {
                 response.Success = false;
                 response.Message = "No albums found.";
+                return response;
+            }
+
+            int pageSize = 6;
+            int pageNumber = (page ?? 1);
+            var pagedList = await foundAlbums.ToPagedListAsync(pageNumber, pageSize);
+            response.Data = pagedList;
+
+            return response;
+        }
+
+        public async Task<ServiceResponse<IPagedList<AppUser>>> SearchUsers(SearchUserVM searchInput, int? page)
+        {
+            var foundAlbums = await _context.AppUsers.Where(u => u.NickName.Contains(searchInput.NickName)).ToListAsync();
+            var response = new ServiceResponse<IPagedList<AppUser>>();
+
+            if (foundAlbums.Count == 0)
+            {
+                response.Success = false;
+                response.Message = "No users found.";
                 return response;
             }
 
