@@ -1,4 +1,4 @@
-﻿@model AppUser
+﻿@model ServiceResponse<AppUser>
 @section Styles {
     <link rel="stylesheet" href="~/css/UserProfile.css" type="text/css" />
 }
@@ -9,24 +9,21 @@
     <table class="table">
         <thead>
             <tr class="table__cell">
-                <th class="table__headCell"><img src="@Model.ProfilePictureURL" alt="Alternate Text" /></th>
+                <th class="table__headCell"><img src="@Model.Data.ProfilePictureURL" alt="Alternate Text" /></th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td class="table__cell"><h3>@Model.NickName</h3></td>
+                <td class="table__cell"><h3>@Model.Data.NickName</h3></td>
             </tr>
             <tr>
-                <td class="table__cell"><p>@Model.NormalizedUserName</p></td>
+                <td class="table__cell"><p>@Model.Data.NormalizedUserName</p></td>
             </tr>
             <tr>
-                <td class="table__cell"><p>@Model.Photos.Count() Photos</p></td>
+                <td class="table__cell"><p>@Model.Data.Photos.Count() Photos</p></td>
             </tr>
             <tr>
-                <td class="table__cell"><p>X Groups</p></td>
-            </tr>
-            <tr>
-                <td class="table__cell">@Model.DateCreated.Year</td>
+                <td class="table__cell">@Model.Data.DateCreated.Year</td>
             </tr>
         </tbody>
     </table>
