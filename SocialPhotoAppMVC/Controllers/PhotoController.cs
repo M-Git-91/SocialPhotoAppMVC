@@ -21,14 +21,11 @@ namespace SocialPhotoAppMVC.Controllers
     {
         private readonly IPhotoService _photoService;
         private readonly IHttpContextAccessor _httpContext;
-        private readonly ApplicationDbContext _context;
-        private readonly IAlbumService _albumService;
 
-        public PhotoController(IPhotoService photoService, IHttpContextAccessor httpContext, ApplicationDbContext context)
+        public PhotoController(IPhotoService photoService, IHttpContextAccessor httpContext)
         {
             _photoService = photoService;
             _httpContext = httpContext;
-            _context = context;
         }
 
         [HttpGet]
