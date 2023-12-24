@@ -22,7 +22,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
 
         public async Task<ServiceResponse<IPagedList<Photo>>> GetAllPhotos(int? page)
         {
-            var allPhotos = await _context.Photos.OrderByDescending(p => p.DateCreated).ToListAsync();
+            var allPhotos = await _context.Photos.Include(p => p.User).OrderByDescending(p => p.DateCreated).ToListAsync();
             var response = new ServiceResponse<IPagedList<Photo>>();
 
             if (allPhotos.Count == 0)
@@ -57,7 +57,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
 
         public async Task<ServiceResponse<IPagedList<Photo>>> GetFeaturedPhotos(int? page)
         {
-            var featuredPhotos = await _context.Photos.Where(p => p.IsFeatured == true).ToListAsync();
+            var featuredPhotos = await _context.Photos.Include(p => p.User).Where(p => p.IsFeatured == true).ToListAsync();
             var response = new ServiceResponse<IPagedList<Photo>>();
 
             if (featuredPhotos.Count == 0)
@@ -93,7 +93,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
 
         public async Task<ServiceResponse<IPagedList<Photo>>> GetUserPhotos(string currentUserId, int? page)
         {
-            var userPhotos = await _context.Photos.Where(p => p.User.Id == currentUserId).ToListAsync();
+            var userPhotos = await _context.Photos.Where(p => p.User.Id == currentUserId).OrderByDescending(p => p.DateCreated).ToListAsync();
             var response = new ServiceResponse<IPagedList<Photo>>();
 
             if (userPhotos.Count == 0) 

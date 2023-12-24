@@ -18,7 +18,7 @@ namespace SocialPhotoAppMVC.Services.AlbumService
 
         public async Task<ServiceResponse<IPagedList<Album>>> GetAllAlbums(int? page)
         {
-            var allAlbums = await _context.Albums.OrderByDescending(p => p.DateCreated).ToListAsync();
+            var allAlbums = await _context.Albums.Include(a => a.User).OrderByDescending(a => a.DateCreated).ToListAsync();
             var response = new ServiceResponse<IPagedList<Album>>();
 
             if (allAlbums.Count == 0)

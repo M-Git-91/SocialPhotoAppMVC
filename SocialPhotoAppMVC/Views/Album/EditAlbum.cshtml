@@ -1,32 +1,37 @@
 ﻿@using SocialPhotoAppMVC.ViewModels
 @model EditAlbumVM
+@{
+    ViewData["Title"] = "Edit album";
+}
 
-<h1>Album editing</h1>
+<div class="w-75 m-auto mt-3">
+    <h1>Album editing</h1>
 
-<form method="post" asp-action="EditAlbum" enctype="multipart/form-data">
-    <input type="hidden" value="AuthorId" id="AuthorId" />
-    <input type="hidden" value="CurrentUserId" id="CurrentUserId" />
-    <input type="hidden" value="AlbumId" id="AlbumId" />
-    <div class="form-group">
-        <label asp-for="Title">Title</label>
-        <input asp-for="Title" class="form-control" placeholder="Title">
-        <span asp-validation-for="Title" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Description">Description</label>
-        <input asp-for="Description" class="form-control" placeholder="Description">
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="NewCoverArt">Choose cover art</label>
-        <input type="file" asp-for="NewCoverArt" class="form-control">
-        <span asp-validation-for="NewCoverArt" class="text-danger"></span>
-    </div>
+    <form method="post" asp-action="EditAlbum" enctype="multipart/form-data">
+        <input type="hidden" value="AuthorId" id="AuthorId" />
+        <input type="hidden" value="CurrentUserId" id="CurrentUserId" />
+        <input type="hidden" value="AlbumId" id="AlbumId" />
+        <div class="form-group">
+            <label asp-for="Title">Title</label>
+            <input asp-for="Title" class="form-control" placeholder="Title">
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description">Description</label>
+            <input asp-for="Description" class="form-control" placeholder="Description">
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="NewCoverArt">Choose cover art</label>
+            <input type="file" asp-for="NewCoverArt" class="form-control">
+            <span asp-validation-for="NewCoverArt" class="text-danger"></span>
+        </div>
 
-    <input type="hidden" asp-for="AuthorId" />
-    <input type="hidden" asp-for="CurrentUserId" />
-    <input type="hidden" asp-for="AlbumId" />
-    <input type="hidden" asp-for="CoverArtUrl" />
+        <input type="hidden" asp-for="AuthorId" />
+        <input type="hidden" asp-for="CurrentUserId" />
+        <input type="hidden" asp-for="AlbumId" />
+        <input type="hidden" asp-for="CoverArtUrl" />
 
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+        <button type="submit" class="btn btn-dark mt-3">Edit album</button>
+    </form>
+</div>

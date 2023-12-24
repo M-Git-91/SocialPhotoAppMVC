@@ -1,18 +1,21 @@
 ﻿@model ServiceResponse<Photo>
 
-<div class="text-center">
+<div class="text-center w-75 m-auto mt-5">
     <!-- Button trigger modal -->
     <section type="button" class="text-center" data-bs-toggle="modal" data-bs-target="#zoomPhoto">
         <section class="bg-dark">
-            <img class="img-fluid pb-3" src="@Model.Data.ImageUrl" alt="Card image cap" width="500">
+            <img class="img-fluid p-3" src="@Model.Data.ImageUrl" alt="Card image cap" width="500">
         </section>
     </section>
-    <section class="text-dark bg-light mb-3 m-auto">
+
+    <section class="text-dark card bg-body-secondary mb-3 mt-3 m-auto">
         <h2 class="card-header">@Model.Data.Title</h2>
-        <h4 class="">Author: @Model.Data.User.NickName</h4>
-        <p class="">Description: @Model.Data.Description</p>
-        <p class="">Category: @Model.Data.Category</p>
-        <p class="">Upload Date: @Model.Data.DateCreated.ToShortDateString()</p>
+        <div class="card-body bg-white">
+            <h4 class="">Author: @Model.Data.User.NickName</h4>
+            <p class="">Description: @Model.Data.Description</p>
+            <p class="">Category: @Model.Data.Category</p>
+            <p class="">Upload Date: @Model.Data.DateCreated.ToShortDateString()</p>
+        </div>
     </section>
 </div>
 

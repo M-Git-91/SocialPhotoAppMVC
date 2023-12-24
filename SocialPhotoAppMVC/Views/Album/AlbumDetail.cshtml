@@ -2,41 +2,42 @@
 @{
     ViewData["Title"] = "Album detail";
 }
-<div class="text-center">
-    <section class="text-dark bg-light mb-3 m-auto">
-        <h2 class="card-header">@Model.Data.Title</h2>
-        <h4 class="">Description: @Model.Data.Description</h4>
-        
-        <p class="">Upload Date: @Model.Data.DateCreated.ToShortDateString()</p>
-    </section>
-</div>
 
-<div class="album py-5 bg-light">
-    <div class="container">
-        <div class="row">
-            @if (Model.Data.Photos.Count() > 0)
-            {
-                @foreach (var item in Model.Data.Photos)
-                {
-                    <div class="col-md-4">
-                        <div class="card mb-4 box-shadow">
-                            <a asp-controller="Photo" asp-action="PhotoDetail" asp-route-id="@item.Id">
-                                <img class="card-img-top" src="@item.ImageUrl" width="100% height="225" alt="photo thumbnail">
-                            </a>
-                            <div class="card-body">
-                                <p class="card-text">@item.Title</p>
-                                <p class="card-text">@item.Description</p>
+<div class="text-center mt-3">
+    <section class="text-dark bg-body-tertiary mb-3 m-auto card mb-4 box-shadow w-75">
+        <h2 class="card-header bg-body-secondary">@Model.Data.Title</h2>
+        <h4 class="mt-2">Description: @Model.Data.Description</h4>
+
+        <p class="">Upload Date: @Model.Data.DateCreated.ToShortDateString()</p>
+
+        <div class="album py-5 bg-body-tertiary">
+            <div class="container">
+                <div class="row">
+                    @if (Model.Data.Photos.Count() > 0)
+                    {
+                        @foreach (var item in Model.Data.Photos)
+                        {
+                            <div class="col-md-4">
+                                <div class="card mb-4 box-shadow">
+                                    <a asp-controller="Photo" asp-action="PhotoDetail" asp-route-id="@item.Id">
+                                        <img class="card-img-top" src="@item.ImageUrl" width="100% height="225" alt="photo thumbnail">
+                                    </a>
+                                    <div class="card-body">
+                                        <h4 class="card-text text-center">@item.Title</h4>
+                                        <p class="card-text text-center">@item.Description</p>
+                                    </div>
+                                </div>
                             </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-md-12 alert alert-danger">
+                            <h2>This album is empty.</h2>
                         </div>
-                    </div>
-                }
-            }
-            else
-            {
-                <div class="col-md-12 alert alert-danger">
-                    <h2>This album is empty.</h2>
+                    }
                 </div>
-            }
+            </div>
         </div>
-    </div>
+    </section>
 </div>

@@ -3,28 +3,16 @@
     <link rel="stylesheet" href="~/css/UserProfile.css" type="text/css" />
 }
 
+<div class="text-center w-75 m-auto mt-3">
+    <!-- Button trigger modal -->
+        <section class="bg-body-tertiary">
+            <img class="img-fluid p-3" src="@Model.Data.ProfilePictureURL" alt="Card image cap" width="500">
+        </section>
 
-
-<div class="wrapper" role="region" tabindex="0">
-    <table class="table">
-        <thead>
-            <tr class="table__cell">
-                <th class="table__headCell"><img src="@Model.Data.ProfilePictureURL" alt="Alternate Text" /></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="table__cell"><h3>@Model.Data.NickName</h3></td>
-            </tr>
-            <tr>
-                <td class="table__cell"><p>@Model.Data.NormalizedUserName</p></td>
-            </tr>
-            <tr>
-                <td class="table__cell"><p>@Model.Data.Photos.Count() Photos</p></td>
-            </tr>
-            <tr>
-                <td class="table__cell">@Model.Data.DateCreated.Year</td>
-            </tr>
-        </tbody>
-    </table>
+        <section class="text-dark bg-body-tertiary mb-3 mt-3 m-auto">
+            <h2 class="card-header mb-2">@Model.Data.NickName</h2>
+            <p class="">@Model.Data.Photos.Count() Photo(s)</p>
+            <p class="">@Model.Data.Albums.Count() Allbum(s)</p>
+            <p class="">Member since: @Model.Data.DateCreated.Year</p>
+        </section>
 </div>

@@ -1,7 +1,7 @@
 ﻿@using SocialPhotoAppMVC.ViewModels;
 @model CreateAlbumVM
 
-<form method="post" asp-action="CreateAlbum" enctype="multipart/form-data">
+<form class="w-75 m-auto mt-3" method="post" asp-action="CreateAlbum" enctype="multipart/form-data">
     <input type="hidden" id="UserId" name="UserId" asp-for="UserId"></input>
     <div class="form-group">
         <label asp-for="Title">Title</label>
@@ -18,5 +18,5 @@
         <input asp-for="CoverArt" type="file" class="form-control">
         <span asp-validation-for="CoverArt" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-dark">Create album</button>
 </form>

@@ -1,28 +1,33 @@
 ﻿@using SocialPhotoAppMVC.ViewModels
 @model DeleteAlbumVM
+@{
+    ViewData["Title"] = "Delete album";
+}
 
-<h1>Are you sure you want to delete this album ?</h1>
+<div class="w-75 m-auto mt-3">
+    <h1>Are you sure you want to delete this album ?</h1>
 
-<form method="post" asp-action="DeleteAlbum" enctype="multipart/form-data">
-    <input type="hidden" value="AlbumOwnerId" id="AlbumOwnerId" />
-    <input type="hidden" value="UserId" id="UserId" />
-    <input type="hidden" value="AlbumId" id="AlbumId" />
-    <div class="form-group">
-        <label asp-for="Title">Title</label>
-        <input asp-for="Title" class="form-control" placeholder="Title">
-        <span asp-validation-for="Title" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Description">Description</label>
-        <input asp-for="Description" class="form-control" placeholder="Description">
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-</form>
-<div class="form-group">
-    <form action="Delete" method="post">
-        <input type="hidden" asp-for="AlbumOwnerId" />
-        <input type="hidden" asp-for="UserId" />
-        <input type="hidden" asp-for="AlbumId" />
-        <input type="submit" value="Confirm" class="btn btn-danger float-right mt-3" />
+    <form method="post" asp-action="DeleteAlbum" enctype="multipart/form-data">
+        <input type="hidden" value="AlbumOwnerId" id="AlbumOwnerId" />
+        <input type="hidden" value="UserId" id="UserId" />
+        <input type="hidden" value="AlbumId" id="AlbumId" />
+        <div class="form-group">
+            <label asp-for="Title">Title</label>
+            <input asp-for="Title" disabled class="form-control" placeholder="Title">
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description">Description</label>
+            <input asp-for="Description" disabled class="form-control" placeholder="Description">
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
     </form>
+    <div class="form-group">
+        <form action="Delete" method="post">
+            <input type="hidden" asp-for="AlbumOwnerId" />
+            <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="AlbumId" />
+            <input type="submit" value="Delete album" class="btn btn-dark float-right mt-3" />
+        </form>
+    </div>
 </div>

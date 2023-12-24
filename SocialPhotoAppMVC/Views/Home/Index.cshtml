@@ -1,4 +1,44 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
+@{
+    ViewData["Title"] = "Photo Share";
 }
 
+
+
+    <div class="bg-img vh-100 d-flex justify-content-center align-items-center bg-">
+        <div class="d-flex flex-column align-items-center">
+            @if (SignInManager.IsSignedIn(User))
+            {
+
+                <h1>Hello @User.Identity.Name!</h1>
+
+                <section>
+                    <a class="btn btn-dark" asp-controller="Photo" asp-action="UploadPhoto">
+                        Upload new photo
+                    </a>
+                    <a class="btn btn-dark" asp-controller="Photo" asp-action="Index">
+                        Explore new photos
+                    </a>
+                </section>
+
+            }
+            else
+            {
+                
+                    <h1>Welcome to PhotoShare !</h1>
+                
+
+                <section>
+                    <a class="btn btn-dark" asp-area="Identity" asp-page="/Account/Register">
+                        Register
+                    </a>
+                    <a class="btn btn-dark" asp-area="Identity" asp-page="/Account/Login">
+                        Login
+                    </a>
+                </section>
+            }
+        </div>
+    </div>

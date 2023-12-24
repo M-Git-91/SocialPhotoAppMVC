@@ -1,15 +1,15 @@
 ﻿@model string
 @{
-    ViewData["Title"] = "ErrorPage";
+    ViewData["Title"] = "Error";
 }
 
 @if (Model != null)
 {
-    <div class="col-md-12 alert alert-danger">
+    <div class="col-md-12 alert alert-danger w-50 m-auto mt-5 text-center">
         <h2>@Model</h2>
     </div>
 }
 else
 {
-    <h1>Something went wrong.</h1>
+    <h1 class="w-75 m-auto">Something went wrong.</h1>
 }

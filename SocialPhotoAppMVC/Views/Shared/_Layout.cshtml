@@ -10,12 +10,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     @RenderSection("Styles", required: false)
 </head>
-<body>
+<body class="bg-body-tertiary">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-dark border-bottom box-shadow">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SocialPhotoAppMVC</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index"><h3>PhotoShare</h3></a>
+                <button class="navbar-toggler bg-secondary" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -24,7 +24,7 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="dropdown">
-                                <div class="nav-link text-dark dropdown-toggle" type="button" id="myProfile" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="nav-link text-light dropdown-toggle" type="button" id="myProfile" data-bs-toggle="dropdown" aria-expanded="false">
                                     You
                                 </div>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -40,15 +40,12 @@
                                     <li class="nav-item">
                                         <a class="dropdown-item text-dark" asp-area="" asp-controller="Album" asp-action="CreateAlbum">Create Album</a>
                                     </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">Something else here</a>
-                                    </li>
                                 </ul>
                             </li>
                         }
 
                         <li class="dropdown">
-                            <div class="nav-link text-dark dropdown-toggle" type="button" id="photos" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="nav-link text-light dropdown-toggle" type="button" id="photos" data-bs-toggle="dropdown" aria-expanded="false">
                                 Photos
                             </div>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -56,29 +53,27 @@
                                     <a class="dropdown-item text-dark" asp-area="" asp-controller="Photo" asp-action="FeaturedPhotos">Featured</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="dropdown-item text-dark" asp-area="" asp-controller="Photo" asp-action="Index">Recent</a>
+                                    <a class="dropdown-item text-dark" asp-area="" asp-controller="Photo" asp-action="Index">New</a>
                                 </li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
                             </ul>
 
                         <li class="dropdown">
-                            <div class="nav-link text-dark dropdown-toggle" type="button" id="albums" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="nav-link text-light dropdown-toggle" type="button" id="albums" data-bs-toggle="dropdown" aria-expanded="false">
                                 Albums
                             </div>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                 <li class="nav-item">
-                                    <a class="dropdown-item text-dark" asp-area="" asp-controller="Album" asp-action="RecentAlbums">Recent</a>
+                                    <a class="dropdown-item text-dark" asp-area="" asp-controller="Album" asp-action="RecentAlbums">New</a>
                                 </li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
                             </ul>
 
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="ListUsers">Users</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="User" asp-action="ListUsers">Users</a>
                         </li>
 
                         <li class="dropdown">
-                            <div class="nav-link text-dark dropdown-toggle" type="button" id="search" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="nav-link text-light dropdown-toggle" type="button" id="search" data-bs-toggle="dropdown" aria-expanded="false">
                                 Search
                             </div>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -88,7 +83,6 @@
                                 <li>
                                     <a class="dropdown-item text-dark" asp-controller="Search" asp-action="SearchAlbumIndex">Albums</a>
                                 </li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
                             </ul>
                     </ul>
                     <partial name="_LoginPartial" />
@@ -97,15 +91,15 @@
         </nav>
     </header>
     
-    <div class="">
-        <main role="main" class="pb-3">
+    <div class="bg-body-tertiary">
+        <main role="main" class="min-vh-100">
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - SocialPhotoAppMVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2023 - PhotoShare
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

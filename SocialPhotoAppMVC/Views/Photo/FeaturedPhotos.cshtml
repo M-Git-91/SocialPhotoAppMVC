@@ -4,8 +4,9 @@
     ViewData["Title"] = "Featured Photos";
 }
 
-<div class="album py-5 bg-light">
+<div class="album py-5 bg-body-tertiary">
     <div class="container">
+        <h1 class="text-center mb-4">Featured photos</h1>
         <div class="row">
             @foreach (var item in Model.Data)
             {
@@ -13,9 +14,11 @@
                     <div class="card mb-4 box-shadow">
                         <a asp-controller="Photo" asp-action="PhotoDetail" asp-route-id="@item.Id">
                             <img class="card-img-top" src="@item.ImageUrl" width="100% height="225" alt="photo thumbnail">
-                        </a>               
+                        </a>
                         <div class="card-body">
-                            <p class="card-text">@item.Title</p>
+                            <p class="card-text p-0 m-0">@item.User.NickName</p>
+                            <p class="p-0 m-0">-------------------------------------</p>
+                            <h4 class="card-text">@item.Title</h4>
                             <p class="card-text">@item.Description</p>
                         </div>
                     </div>

@@ -2,6 +2,11 @@ html {
   font-size: 14px;
 }
 
+.bg-img {
+    background-image: url("https://res.cloudinary.com/dfqrqfs3a/image/upload/v1692712149/zzp8isfhy1alttrr1fg9.jpg");
+    margin: 0px;
+}
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
