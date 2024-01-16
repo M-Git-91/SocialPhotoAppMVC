@@ -1,0 +1,17 @@
+﻿@using SocialPhotoAppMVC.Enums;
+@using X.PagedList.Mvc.Core
+@model SocialPhotoAppMVC.ViewModels.SearchUserVM
+@{
+    ViewData["Title"] = "Search Users";
+}
+<div class="w-75 m-auto mt-3">
+    <h1>Search users</h1>
+    <form method="post" asp-action="SearchUsers" enctype="multipart/form-data">
+        <div class="form-group">
+            <label asp-for="NickName">NickName</label>
+            <input asp-for="NickName" class="form-control" placeholder="NickName">
+            <span asp-validation-for="NickName" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-dark mt-3">Search</button>
+    </form>
+</div>

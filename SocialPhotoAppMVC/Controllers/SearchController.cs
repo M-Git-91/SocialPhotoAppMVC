@@ -50,5 +50,24 @@ namespace SocialPhotoAppMVC.Controllers
 
             return View("AlbumsSearchResult", response);
         }
+
+        public IActionResult SearchUserIndex()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> SearchUsers(SearchUserVM searchInput, int? page) 
+        {
+            var response = await _searchService.SearchUsers(searchInput, page);
+
+            if (response.Success == false)
+            {
+                var errorMessage = response.Message;
+                return View("ErrorPage", errorMessage);
+            }
+
+            return View("UsersSearchResult", response);
+        }
+
     }
 }

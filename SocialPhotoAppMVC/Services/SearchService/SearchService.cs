@@ -68,6 +68,26 @@ namespace SocialPhotoAppMVC.Services.SearchService
             return response;
         }
 
+        public async Task<ServiceResponse<IPagedList<AppUser>>> SearchUsers(SearchUserVM searchInput, int? page)
+        {
+            var foundUsers = await _context.Users.Where(u => u.NickName.Contains(searchInput.NickName)).ToListAsync();
+            var response = new ServiceResponse<IPagedList<AppUser>>();
+
+            if (foundUsers.Count == 0)
+            {
+                response.Success = false;
+                response.Message = "No users found.";
+                return response;
+            }
+
+            int pageSize = 6;
+            int pageNumber = (page ?? 1);
+            var pagedList = await foundUsers.ToPagedListAsync(pageNumber, pageSize);
+            response.Data = pagedList;
+
+            return response;
+        }
+
         private async Task<IPagedList<Photo>> PaginateListOfPhotos(List<Photo> listOfPhotos, int? page, int pageSize) 
         {
             var pageNumber = (page ?? 1);
