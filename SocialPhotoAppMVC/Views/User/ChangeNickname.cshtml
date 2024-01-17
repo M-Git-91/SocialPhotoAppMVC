@@ -1,0 +1,23 @@
+﻿
+@model SocialPhotoAppMVC.ViewModels.ChangeNicknameVM
+
+<h3>Change nickname</h3>
+<div class="row">
+    <div class="col-md-6">
+        <form id="change-password-form" method="post" asp-action="ChangeNickname">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input type="hidden" value="CurrentUserId" id="CurrentUserId" />
+                <input type="hidden" name="CurrentUserId" asp-for="CurrentUserId" />
+                <input asp-for="Nickname" class="form-control" placeholder="Please enter your new nickname." />
+                <label asp-for="Nickname" class="form-label"></label>
+                <span asp-validation-for="Nickname" class="text-danger"></span>
+            </div>
+            <button type="submit" class="w-100 btn btn-lg btn-dark">Update nickname</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialPhotoAppMVC.Models;
+using SocialPhotoAppMVC.ViewModels;
 using X.PagedList;
 
 namespace SocialPhotoAppMVC.Services.UserService
@@ -51,6 +52,19 @@ namespace SocialPhotoAppMVC.Services.UserService
 
             response.Data = findUser;
 
+            return response;
+        }
+
+        public async Task<ServiceResponse<bool>> ChangeNickname(ChangeNicknameVM nicknameVM)
+        {
+            var response = new ServiceResponse<bool>();
+            var userModel = await GetUserById(nicknameVM.CurrentUserId);
+
+            userModel.Data.NickName = nicknameVM.Nickname;
+            _context.AppUsers.Update(userModel.Data);
+            await _context.SaveChangesAsync();
+
+            response.Data = true;
             return response;
         }
     }

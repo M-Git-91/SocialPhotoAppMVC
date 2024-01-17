@@ -1,4 +1,5 @@
-﻿using X.PagedList;
+﻿using SocialPhotoAppMVC.ViewModels;
+using X.PagedList;
 
 namespace SocialPhotoAppMVC.Services.UserService
 {
@@ -6,5 +7,6 @@ namespace SocialPhotoAppMVC.Services.UserService
     {
         Task<ServiceResponse<IPagedList<AppUser>>> GetAllUsers(int? page);
         Task<ServiceResponse<AppUser>> GetUserById(string id);
+        Task<ServiceResponse<bool>> ChangeNickname(ChangeNicknameVM nicknameVM);
     }
 }

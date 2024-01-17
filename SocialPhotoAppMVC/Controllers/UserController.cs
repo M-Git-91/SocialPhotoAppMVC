@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SocialPhotoAppMVC.Services.UserService;
 using SocialPhotoAppMVC.ViewModels;
@@ -21,6 +22,7 @@ namespace SocialPhotoAppMVC.Controllers
             _userService = userService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> ListUsers(int? page)
         {
             var allUsers = await _userService.GetAllUsers(page);
@@ -33,7 +35,7 @@ namespace SocialPhotoAppMVC.Controllers
 
             return View(allUsers);
         }
-
+        [HttpGet]
         public async Task<IActionResult> UserProfile(string id)
         {
             var findUser = await _userService.GetUserById(id);
@@ -45,6 +47,25 @@ namespace SocialPhotoAppMVC.Controllers
             }
 
             return View(findUser);
+        }
+
+        [HttpGet, Authorize]
+        public async Task<IActionResult> ChangeNickname() 
+        {
+            string currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userModel = await _userService.GetUserById(currentUserId);
+
+            var changeNickVM = new ChangeNicknameVM { CurrentUserId = currentUserId, Nickname = userModel.Data.NickName};
+
+            return View(changeNickVM);
+        }
+
+        [HttpPost, Authorize]
+        public async Task<IActionResult> ChangeNickname(ChangeNicknameVM newNick) 
+        {
+            await _userService.ChangeNickname(newNick);
+
+            return RedirectToAction("ChangeNickname");
         }
     }
 }
