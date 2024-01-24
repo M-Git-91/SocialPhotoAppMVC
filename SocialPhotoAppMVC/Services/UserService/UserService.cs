@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialPhotoAppMVC.Models;
+using SocialPhotoAppMVC.Services.PhotoService;
 using SocialPhotoAppMVC.ViewModels;
 using X.PagedList;
 
@@ -8,10 +9,12 @@ namespace SocialPhotoAppMVC.Services.UserService
     public class UserService : IUserService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IPhotoService _photoService;
 
-        public UserService(ApplicationDbContext context)
+        public UserService(ApplicationDbContext context, IPhotoService photoService)
         {
             _context = context;
+            _photoService = photoService;
         }
 
         public async Task<ServiceResponse<IPagedList<AppUser>>> GetAllUsers(int? page)
@@ -34,25 +37,41 @@ namespace SocialPhotoAppMVC.Services.UserService
             return response;
         }
 
-        public async Task<ServiceResponse<AppUser>> GetUserById(string id)
+        public async Task<ServiceResponse<AppUserProfileDTO>> GetUserProfile(string id, int? page)
         {
-            var response = new ServiceResponse<AppUser>();
+            var response = new ServiceResponse<AppUserProfileDTO>();
 
-            var findUser = await _context.Users
-                .Include(u => u.Photos)
-                .Include(u => u.Albums)
-                .FirstOrDefaultAsync(p => p.Id == id);
+            AppUser? user = await GetUserById(id);
 
-            if (findUser == null)
+            if (user == null)
             {
                 response.Success = false;
                 response.Message = "User not found.";
                 return response;
             }
 
-            response.Data = findUser;
+            var userPhotos = await _photoService.GetUserPhotos(id, page);
+
+            var userProfileDTO = new AppUserProfileDTO
+            {
+                UserId = id,
+                NickName = user.NickName,
+                ProfilePictureURL = user.ProfilePictureURL,
+                DateCreated = user.DateCreated,
+                Photos = userPhotos.Data
+            };
+
+            response.Data = userProfileDTO;
 
             return response;
+        }
+
+        public async Task<AppUser?> GetUserById(string id)
+        {
+            return await _context.Users
+                .Include(u => u.Photos)
+                .Include(u => u.Albums)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<ServiceResponse<bool>> ChangeNickname(ChangeNicknameVM nicknameVM)
@@ -60,8 +79,8 @@ namespace SocialPhotoAppMVC.Services.UserService
             var response = new ServiceResponse<bool>();
             var userModel = await GetUserById(nicknameVM.CurrentUserId);
 
-            userModel.Data.NickName = nicknameVM.Nickname;
-            _context.AppUsers.Update(userModel.Data);
+            userModel.NickName = nicknameVM.Nickname;
+            _context.AppUsers.Update(userModel);
             await _context.SaveChangesAsync();
 
             response.Data = true;

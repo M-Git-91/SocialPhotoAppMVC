@@ -6,7 +6,8 @@ namespace SocialPhotoAppMVC.Services.UserService
     public interface IUserService
     {
         Task<ServiceResponse<IPagedList<AppUser>>> GetAllUsers(int? page);
-        Task<ServiceResponse<AppUser>> GetUserById(string id);
+        Task<ServiceResponse<AppUserProfileDTO>> GetUserProfile(string id, int? page);
         Task<ServiceResponse<bool>> ChangeNickname(ChangeNicknameVM nicknameVM);
+        Task<AppUser?> GetUserById(string id);
     }
 }

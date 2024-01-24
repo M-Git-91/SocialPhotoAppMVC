@@ -9,16 +9,12 @@ namespace SocialPhotoAppMVC.Controllers
 {
     public class UserController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IHttpContextAccessor _httpContext;
-        private readonly IWebHostEnvironment _webHost;
         private readonly IUserService _userService;
 
-        public UserController(ApplicationDbContext context, IHttpContextAccessor httpContext, IWebHostEnvironment webHost, IUserService userService)
+        public UserController(IHttpContextAccessor httpContext, IUserService userService)
         {
-            _context = context;
             _httpContext = httpContext;
-            _webHost = webHost;
             _userService = userService;
         }
 
@@ -36,17 +32,17 @@ namespace SocialPhotoAppMVC.Controllers
             return View(allUsers);
         }
         [HttpGet]
-        public async Task<IActionResult> UserProfile(string id)
+        public async Task<IActionResult> UserProfile(string id, int? page)
         {
-            var findUser = await _userService.GetUserById(id);
+            var userProfile = await _userService.GetUserProfile(id, page);
 
-            if (findUser.Success == false)
+            if (userProfile.Success == false)
             {
-                var errorMessage = findUser.Message;
+                var errorMessage = userProfile.Message;
                 return View("ErrorPage", errorMessage);
             }
 
-            return View(findUser);
+            return View(userProfile);
         }
 
         [HttpGet, Authorize]
@@ -55,7 +51,7 @@ namespace SocialPhotoAppMVC.Controllers
             string currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var userModel = await _userService.GetUserById(currentUserId);
 
-            var changeNickVM = new ChangeNicknameVM { CurrentUserId = currentUserId, Nickname = userModel.Data.NickName};
+            var changeNickVM = new ChangeNicknameVM { CurrentUserId = currentUserId, Nickname = userModel.NickName};
 
             return View(changeNickVM);
         }

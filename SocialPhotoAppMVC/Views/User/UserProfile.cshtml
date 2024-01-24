@@ -1,18 +1,48 @@
-﻿@model ServiceResponse<AppUser>
+﻿@using SocialPhotoAppMVC.ViewModels
+@using X.PagedList.Mvc.Core
+
+@model ServiceResponse<AppUserProfileDTO>
 @section Styles {
     <link rel="stylesheet" href="~/css/UserProfile.css" type="text/css" />
+}
+@{
+    ViewData["Title"] = "User Profile";
 }
 
 <div class="text-center w-75 m-auto mt-3">
     <!-- Button trigger modal -->
-        <section class="bg-body-tertiary">
-            <img class="img-fluid p-3" src="@Model.Data.ProfilePictureURL" alt="Card image cap" width="500">
-        </section>
+    <section class="bg-body-tertiary">
+        <img class="img-fluid p-3" src="@Model.Data.ProfilePictureURL" alt="Card image cap" width="500">
+    </section>
 
-        <section class="text-dark bg-body-tertiary mb-3 mt-3 m-auto">
-            <h2 class="card-header mb-2">@Model.Data.NickName</h2>
-            <p class="">@Model.Data.Photos.Count() Photo(s)</p>
-            <p class="">@Model.Data.Albums.Count() Allbum(s)</p>
-            <p class="">Member since: @Model.Data.DateCreated.Year</p>
-        </section>
+    <section class="text-dark bg-body-tertiary mb-3 mt-3 m-auto">
+        <h2 class="card-header mb-2">@Model.Data.NickName</h2>
+        <p class="">@Model.Data.Photos.Count() Photo(s)</p>
+        <p class="">@Model.Data.Albums.Count() Allbum(s)</p>
+        <p class="">Member since: @Model.Data.DateCreated.Year</p>
+    </section>
+
+    <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+            @*<h1 class="text-center mb-4">Featured photos</h1>*@
+            <div class="row">
+                @foreach (var item in Model.Data.Photos)
+                {
+                    <div class="col-md-4">
+                        <div class="card mb-4 box-shadow">
+                            <a asp-controller="Photo" asp-action="PhotoDetail" asp-route-id="@item.Id">
+                                <img class="card-img-top" src="@item.ImageUrl" width="100% height="225" alt="photo thumbnail">
+                            </a>
+                            <div class="card-body">
+                                <p class="card-text p-0 m-0 mb-3 text-center rounded-2 bg-body-secondary">@item.User.NickName</p>
+                                <h4 class="card-text text-center">@item.Title</h4>
+                                <p class="card-text text-center">@item.Description</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            @Html.PagedListPager(Model.Data.Photos, page => Url.Action("UserProfile",  new { page, id = Model.Data.UserId }))
+        </div>
+    </div>
 </div>

@@ -1,5 +1,6 @@
 global using SocialPhotoAppMVC.Data;
 global using SocialPhotoAppMVC.Models;
+global using SocialPhotoAppMVC.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -9,6 +10,7 @@ using SocialPhotoAppMVC.Services.AlbumService;
 using SocialPhotoAppMVC.Services.PhotoService;
 using SocialPhotoAppMVC.Services.SearchService;
 using SocialPhotoAppMVC.Services.UserService;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
