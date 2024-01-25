@@ -32,9 +32,9 @@ namespace SocialPhotoAppMVC.Controllers
             return View(allUsers);
         }
         [HttpGet]
-        public async Task<IActionResult> UserProfile(string id, int? page)
+        public async Task<IActionResult> UserProfile(string id, int? photosPage, int? albumsPage)
         {
-            var userProfile = await _userService.GetUserProfile(id, page);
+            var userProfile = await _userService.GetUserProfile(id, photosPage, albumsPage);
 
             if (userProfile.Success == false)
             {

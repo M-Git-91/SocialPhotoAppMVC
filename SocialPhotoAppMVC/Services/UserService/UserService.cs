@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialPhotoAppMVC.Models;
+using SocialPhotoAppMVC.Services.AlbumService;
 using SocialPhotoAppMVC.Services.PhotoService;
 using SocialPhotoAppMVC.ViewModels;
 using X.PagedList;
@@ -10,11 +11,13 @@ namespace SocialPhotoAppMVC.Services.UserService
     {
         private readonly ApplicationDbContext _context;
         private readonly IPhotoService _photoService;
+        private readonly IAlbumService _albumService;
 
-        public UserService(ApplicationDbContext context, IPhotoService photoService)
+        public UserService(ApplicationDbContext context, IPhotoService photoService, IAlbumService albumService)
         {
             _context = context;
             _photoService = photoService;
+            _albumService = albumService;
         }
 
         public async Task<ServiceResponse<IPagedList<AppUser>>> GetAllUsers(int? page)
@@ -37,7 +40,7 @@ namespace SocialPhotoAppMVC.Services.UserService
             return response;
         }
 
-        public async Task<ServiceResponse<AppUserProfileDTO>> GetUserProfile(string id, int? page)
+        public async Task<ServiceResponse<AppUserProfileDTO>> GetUserProfile(string id, int? photosPage, int? albumsPage)
         {
             var response = new ServiceResponse<AppUserProfileDTO>();
 
@@ -50,7 +53,8 @@ namespace SocialPhotoAppMVC.Services.UserService
                 return response;
             }
 
-            var userPhotos = await _photoService.GetUserPhotos(id, page);
+            var userPhotos = await _photoService.GetUserPhotos(id, photosPage);
+            var userAlbums = await _albumService.GetUserAlbums(id, albumsPage);
 
             var userProfileDTO = new AppUserProfileDTO
             {
@@ -58,7 +62,8 @@ namespace SocialPhotoAppMVC.Services.UserService
                 NickName = user.NickName,
                 ProfilePictureURL = user.ProfilePictureURL,
                 DateCreated = user.DateCreated,
-                Photos = userPhotos.Data
+                Photos = userPhotos.Data,
+                Albums = userAlbums.Data
             };
 
             response.Data = userProfileDTO;

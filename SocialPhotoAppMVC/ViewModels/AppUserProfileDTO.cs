@@ -12,6 +12,6 @@ namespace SocialPhotoAppMVC.ViewModels
         [DataType(DataType.Date), Column(TypeName = "Date")]
         public DateTime DateCreated { get; set; }
         public IPagedList<Photo>? Photos { get; set; }
-        public List<Album> Albums { get; set; } = new List<Album>();
+        public IPagedList<Album>? Albums { get; set; }
     }
 }
