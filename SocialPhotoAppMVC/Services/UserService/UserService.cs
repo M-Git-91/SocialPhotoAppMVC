@@ -40,7 +40,7 @@ namespace SocialPhotoAppMVC.Services.UserService
             return response;
         }
 
-        public async Task<ServiceResponse<AppUserProfileDTO>> GetUserProfile(string id, int? photosPage, int? albumsPage)
+        public async Task<ServiceResponse<AppUserProfileDTO>> GetUserProfile(string id, int? photosPageCount, int? albumsPageCount, int photosPerPage, int albumsPerPage)
         {
             var response = new ServiceResponse<AppUserProfileDTO>();
 
@@ -53,8 +53,8 @@ namespace SocialPhotoAppMVC.Services.UserService
                 return response;
             }
 
-            var userPhotos = await _photoService.GetUserPhotos(id, photosPage);
-            var userAlbums = await _albumService.GetUserAlbums(id, albumsPage);
+            var userPhotos = await _photoService.GetUserPhotos(id, photosPageCount, photosPerPage);
+            var userAlbums = await _albumService.GetUserAlbums(id, albumsPageCount, albumsPerPage);
 
             var userProfileDTO = new AppUserProfileDTO
             {

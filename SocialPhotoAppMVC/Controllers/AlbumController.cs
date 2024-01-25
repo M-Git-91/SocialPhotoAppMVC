@@ -48,8 +48,9 @@ namespace SocialPhotoAppMVC.Controllers
         [HttpGet]
         public async Task<IActionResult> UserAlbums(int? page)
         {
+            var albumsPerPage = 6;
             var currentUserId = _httpContext.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userPhotos = await _albumService.GetUserAlbums(currentUserId, page);
+            var userPhotos = await _albumService.GetUserAlbums(currentUserId, page, albumsPerPage);
 
             if (userPhotos.Success == false)
             {

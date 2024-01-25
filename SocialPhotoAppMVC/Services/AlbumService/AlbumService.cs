@@ -51,7 +51,7 @@ namespace SocialPhotoAppMVC.Services.AlbumService
             return response;
         }
 
-        public async Task<ServiceResponse<IPagedList<Album>>> GetUserAlbums(string currentUserId, int? page)
+        public async Task<ServiceResponse<IPagedList<Album>>> GetUserAlbums(string currentUserId, int? page, int albumsPerPage)
         {
             var userAlbums = await _context.Albums.Where(p => p.User.Id == currentUserId).ToListAsync();
             var response = new ServiceResponse<IPagedList<Album>>();
@@ -63,9 +63,8 @@ namespace SocialPhotoAppMVC.Services.AlbumService
                 return response;
             }
 
-            int pageSize = 5;
             int pageNumber = (page ?? 1);
-            var pagedList = await userAlbums.ToPagedListAsync(pageNumber, pageSize);
+            var pagedList = await userAlbums.ToPagedListAsync(pageNumber, albumsPerPage);
             response.Data = pagedList;
 
             return response;

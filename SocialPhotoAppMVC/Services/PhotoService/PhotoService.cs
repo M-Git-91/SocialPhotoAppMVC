@@ -91,7 +91,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
         }
 
 
-        public async Task<ServiceResponse<IPagedList<Photo>>> GetUserPhotos(string currentUserId, int? page)
+        public async Task<ServiceResponse<IPagedList<Photo>>> GetUserPhotos(string currentUserId, int? page, int resultsPerPage)
         {
             var userPhotos = await _context.Photos.Where(p => p.User.Id == currentUserId).OrderByDescending(p => p.DateCreated).ToListAsync();
             var response = new ServiceResponse<IPagedList<Photo>>();
@@ -103,9 +103,8 @@ namespace SocialPhotoAppMVC.Services.PhotoService
                 return response;
             }
 
-            int pageSize = 6;
             int pageNumber = (page ?? 1);
-            var pagedList = await userPhotos.ToPagedListAsync(pageNumber, pageSize);
+            var pagedList = await userPhotos.ToPagedListAsync(pageNumber, resultsPerPage);
             response.Data = pagedList;
 
             return response;

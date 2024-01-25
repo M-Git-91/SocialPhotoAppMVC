@@ -73,7 +73,8 @@ namespace SocialPhotoAppMVC.Controllers
         public async Task<IActionResult> UserPhotos(int? page)
         {
             var currentUserId = _httpContext.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userPhotos = await _photoService.GetUserPhotos(currentUserId, page);
+            int resultsPerPage = 9;
+            var userPhotos = await _photoService.GetUserPhotos(currentUserId, page, resultsPerPage);
 
             if (userPhotos.Success == false)
             {

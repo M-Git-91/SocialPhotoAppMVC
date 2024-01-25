@@ -34,7 +34,9 @@ namespace SocialPhotoAppMVC.Controllers
         [HttpGet]
         public async Task<IActionResult> UserProfile(string id, int? photosPage, int? albumsPage)
         {
-            var userProfile = await _userService.GetUserProfile(id, photosPage, albumsPage);
+            var photosPerPage = 9;
+            var albumsPerPage = 3;
+            var userProfile = await _userService.GetUserProfile(id, photosPage, albumsPage, photosPerPage, albumsPerPage);
 
             if (userProfile.Success == false)
             {
