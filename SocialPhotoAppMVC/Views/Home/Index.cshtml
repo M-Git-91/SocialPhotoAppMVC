@@ -6,14 +6,11 @@
     ViewData["Title"] = "Photo Share";
 }
 
-
-
     <div class="bg-img vh-100 d-flex justify-content-center align-items-center bg-">
         <div class="d-flex flex-column align-items-center">
             @if (SignInManager.IsSignedIn(User))
             {
-
-                <h1>Hello @User.Identity.Name!</h1>
+                <h1>Hello @User.Identity.Name</h1>
 
                 <section>
                     <a class="btn btn-dark" asp-controller="Photo" asp-action="UploadPhoto">
@@ -23,14 +20,11 @@
                         Explore new photos
                     </a>
                 </section>
-
             }
             else
-            {
+            {            
+                <h1>Welcome to PhotoShare !</h1>
                 
-                    <h1>Welcome to PhotoShare !</h1>
-                
-
                 <section>
                     <a class="btn btn-dark" asp-area="Identity" asp-page="/Account/Register">
                         Register

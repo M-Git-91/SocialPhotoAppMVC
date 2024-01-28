@@ -1,13 +1,13 @@
 ﻿@model ServiceResponse<Photo>
 
 <div class="text-center w-75 m-auto mt-5">
-    <!-- Button trigger modal -->
+    @* Modal button *@
     <section type="button" class="text-center" data-bs-toggle="modal" data-bs-target="#zoomPhoto">
         <section class="bg-dark">
             <img class="img-fluid p-3" src="@Model.Data.ImageUrl" alt="Card image cap" width="500">
         </section>
     </section>
-
+    @* Photo Details *@
     <section class="text-dark card bg-body-secondary mb-3 mt-3 m-auto">
         <h2 class="card-header">@Model.Data.Title</h2>
         <div class="card-body bg-white">
@@ -19,11 +19,11 @@
     </section>
 </div>
 
-<!-- Modal -->
+@* Modal *@
 <div class="modal fade" id="zoomPhoto" tabindex="-1" aria-labelledby="modalZoomedPhoto" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-body modal-content">
-            <img src="@Model.Data.ImageUrl" alt="originalSizePhoto" />
+    <div class="modal-dialog modal-lg mw-100 m-0">
+        <div class="modal-body text-center">
+            <img src="@Model.Data.ImageUrl" style="max-width:95vw; max-height:95vh;" alt="originalSizePhoto" />
         </div>
     </div>
 </div>
