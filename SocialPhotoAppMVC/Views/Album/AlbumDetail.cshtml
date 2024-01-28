@@ -4,16 +4,16 @@
 }
 
 <div class="text-center mt-3">
-    @*Profile Image*@
-    <section class="bg-body-tertiary">
-        <img class="img-fluid p-3 rounded-5" src="@Model.Data.CoverArtUrl" alt="Card image cap" style="height:300px">
-    </section>
-
-    @* Album details *@
-    <section class="text-dark bg-body-tertiary mb-3 m-auto  mb-4 box-shadow w-75 card">
-        <h1 class="bg-body-secondary pt-2 pb-2">@Model.Data.Title</h1>
-        <p class="mt-2">@Model.Data.Description</p>
-    </section>
+    @* Album header *@
+    <div class="w-75 m-auto">
+        <section class="">
+            <img class="img-fluid p-3 rounded-5" src="@Model.Data.CoverArtUrl" alt="Card image cap" style="height:300px">
+        </section>
+        <section class="text-dark mb-3 mb-4 box-shadow pb-4">
+            <h1 class=" pt-2 pb-2">@Model.Data.Title</h1>
+            <p class="mt-2">@Model.Data.Description</p>
+        </section>
+    </div>
 
     @* Photos *@
     <section class="text-dark bg-body-tertiary mb-3 m-auto  mb-4 box-shadow w-75">

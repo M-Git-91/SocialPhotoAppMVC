@@ -1,0 +1,10 @@
+global using Xunit;
+global using Microsoft.EntityFrameworkCore;
+global using SocialPhotoAppMVC.Data;
+global using SocialPhotoAppMVC.Models;
+global using SocialPhotoAppMVC.Services.AlbumService;
+global using X.PagedList;
+global using FakeItEasy;
+global using FluentAssertions;
+global using SocialPhotoAppMVC.Services;
+global using SocialPhotoAppMVC.Services.AlbumService;
