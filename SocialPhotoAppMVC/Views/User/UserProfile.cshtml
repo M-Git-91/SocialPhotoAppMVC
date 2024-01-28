@@ -1,7 +1,9 @@
 ﻿@using SocialPhotoAppMVC.ViewModels
 @using X.PagedList.Mvc.Core
-
+@using Microsoft.AspNetCore.Identity
 @model ServiceResponse<AppUserProfileDTO>
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
 @section Styles {
     <link rel="stylesheet" href="~/css/UserProfile.css" type="text/css" />
 }
@@ -16,27 +18,35 @@
     </section>
 
     @* User Info *@
-    <section class="text-dark bg-body-tertiary mb-3 mt-3 m-auto">
+<section class="text-dark bg-body-tertiary mb-3 mt-3 m-auto">
+    @if (Model.Data.NickName.Length != 0)
+    {
         <h1 class="card-header mb-4">@Model.Data.NickName</h1>
-        @if (Model.Data.Photos == null)
-        {
-            <span class="me-5">0 Photo(s)</span>
-        }
-        else
-        {
-            <span class="me-5">@Model.Data.Photos.Count() Photo(s)</span>
-        }
-    
-        @if (Model.Data.Albums == null)
-        {
-            <span class="me-5">0 Album(s)</span>
-        }
-        else
-        {
-            <span class="me-5">@Model.Data.Albums.Count() Album(s)</span>
-        }
-        <span class="">Member since: @Model.Data.DateCreated.Year</span>
-    </section>
+    }
+    else
+    {
+        <h1 class="card-header mb-4">@User.Identity.Name</h1>
+    }
+
+    @if (Model.Data.Photos == null)
+    {
+        <span class="me-5">0 Photo(s)</span>
+    }
+    else
+    {
+        <span class="me-5">@Model.Data.Photos.Count() Photo(s)</span>
+    }
+
+    @if (Model.Data.Albums == null)
+    {
+        <span class="me-5">0 Album(s)</span>
+    }
+    else
+    {
+        <span class="me-5">@Model.Data.Albums.Count() Album(s)</span>
+    }
+    <span class="">Member since: @Model.Data.DateCreated.Year</span>
+</section>
 
     @* Albums *@
     <div class="album py-3 bg-body-tertiary">

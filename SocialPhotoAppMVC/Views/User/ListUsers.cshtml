@@ -1,5 +1,8 @@
 ﻿@using X.PagedList.Mvc.Core
+@using Microsoft.AspNetCore.Identity
 @model ServiceResponse<X.PagedList.IPagedList<AppUser>>
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
 @{
     ViewData["Title"] = "Users";
 }
@@ -14,8 +17,15 @@
                     <div class="card mb-4 box-shadow">
                         <img class="card-img-top" src="@item.ProfilePictureURL" width="100% height="225" alt="Card image cap">
                         <div class="card-body">
-                            <p class="card-text">@item.NickName</p>
-                            <p class="card-text">@item.DateCreated</p>
+                            @if (item.NickName.Length != 0)
+                            {
+                                <h4 class="card-text text-center">@item.NickName</h4>
+                            }
+                            else
+                            {
+                                <h4 class="card-text text-center">@item.UserName</h4>
+                            }
+                            <p class="card-text text-center">@item.DateCreated.Date</p>
                             <a asp-controller="User" asp-action="UserProfile" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">View</a>
                         </div>
                     </div>
