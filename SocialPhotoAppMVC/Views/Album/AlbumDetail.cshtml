@@ -4,12 +4,19 @@
 }
 
 <div class="text-center mt-3">
-    <section class="text-dark bg-body-tertiary mb-3 m-auto card mb-4 box-shadow w-75">
-        <h2 class="card-header bg-body-secondary">@Model.Data.Title</h2>
-        <h4 class="mt-2">Description: @Model.Data.Description</h4>
+    @*Profile Image*@
+    <section class="bg-body-tertiary">
+        <img class="img-fluid p-3 rounded-5" src="@Model.Data.CoverArtUrl" alt="Card image cap" style="height:300px">
+    </section>
 
-        <p class="">Upload Date: @Model.Data.DateCreated.ToShortDateString()</p>
+    @* Album details *@
+    <section class="text-dark bg-body-tertiary mb-3 m-auto  mb-4 box-shadow w-75 card">
+        <h1 class="bg-body-secondary pt-2 pb-2">@Model.Data.Title</h1>
+        <p class="mt-2">@Model.Data.Description</p>
+    </section>
 
+    @* Photos *@
+    <section class="text-dark bg-body-tertiary mb-3 m-auto  mb-4 box-shadow w-75">
         <div class="album py-5 bg-body-tertiary">
             <div class="container">
                 <div class="row">
@@ -23,7 +30,7 @@
                                         <img class="card-img-top" src="@item.ImageUrl" width="100% height="225" alt="photo thumbnail">
                                     </a>
                                     <div class="card-body">
-                                        <h4 class="card-text text-center">@item.Title</h4>
+                                        <h4 class="card-text text-center bg-body-secondary">@item.Title</h4>
                                         <p class="card-text text-center">@item.Description</p>
                                     </div>
                                 </div>
