@@ -34,7 +34,7 @@ namespace SocialPhotoAppMVC.Data.Migrations
 
                     b.HasIndex("PhotosId");
 
-                    b.ToTable("AlbumPhoto");
+                    b.ToTable("AlbumPhoto", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -206,7 +206,7 @@ namespace SocialPhotoAppMVC.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Albums");
+                    b.ToTable("Albums", (string)null);
                 });
 
             modelBuilder.Entity("SocialPhotoAppMVC.Models.AppUser", b =>
@@ -325,7 +325,7 @@ namespace SocialPhotoAppMVC.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Photos");
+                    b.ToTable("Photos", (string)null);
                 });
 
             modelBuilder.Entity("AlbumPhoto", b =>

@@ -28,7 +28,7 @@ namespace SocialPhotoAppMVC.Services.AlbumService
                 return response;
             }
 
-            int pageSize = 5;
+            int pageSize = 6;
             int pageNumber = (page ?? 1);
             var pagedList = await allAlbums.ToPagedListAsync(pageNumber, pageSize);
             response.Data = pagedList;
