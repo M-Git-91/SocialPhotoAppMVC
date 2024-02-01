@@ -58,7 +58,7 @@ namespace SocialPhotoAppMVC.Tests.Services.AlbumServiceTests
         }
 
         [Fact]
-        public async void AlbumService_GetAlbumByIdAsync_GetAlbum()
+        public async void AlbumService_GetAlbumByIdAsync_ReturnAlbum()
         {
             //Arrange
             var dbContext = await InMemoryDb.GetDbContext();
@@ -76,7 +76,7 @@ namespace SocialPhotoAppMVC.Tests.Services.AlbumServiceTests
 
 
         [Fact]
-        public async void AlbumService_GetUserAlbums_GetAlbums()
+        public async void AlbumService_GetUserAlbums_ReturnAlbums()
         {
             //Arrange
             var dbContext = await InMemoryDb.GetDbContext();
@@ -95,7 +95,7 @@ namespace SocialPhotoAppMVC.Tests.Services.AlbumServiceTests
         }
 
         [Fact]
-        public async void AlbumService_GetUserAlbums_GetSuccessFalse()
+        public async void AlbumService_GetUserAlbums_ReturnSuccessFalse()
         {
             //Arrange
             var dbContext = await InMemoryDb.GetDbContext();
@@ -117,7 +117,7 @@ namespace SocialPhotoAppMVC.Tests.Services.AlbumServiceTests
         }
 
         [Fact]
-        public async void AlbumService_GetAlbumDetail_GetAlbum() 
+        public async void AlbumService_GetAlbumDetail_ReturnAlbum() 
         {
             //Arrange
             var dbContext = await InMemoryDb.GetDbContext();
@@ -135,7 +135,7 @@ namespace SocialPhotoAppMVC.Tests.Services.AlbumServiceTests
         }
 
         [Fact]
-        public async void AlbumService_GetAlbumDetail_GetSuccesFalse()
+        public async void AlbumService_GetAlbumDetail_ReturnSuccesFalse()
         {
             //Arrange
             var dbContext = await InMemoryDb.GetDbContext();
@@ -155,7 +155,7 @@ namespace SocialPhotoAppMVC.Tests.Services.AlbumServiceTests
         }
 
         [Fact]
-        public async void AlbumService_DeleteAlbum_GetDataFalse()
+        public async void AlbumService_DeleteAlbum_ReturnDataFalse()
         {
             //Arrange
             var dbContext = await InMemoryDb.GetDbContext();
@@ -172,7 +172,7 @@ namespace SocialPhotoAppMVC.Tests.Services.AlbumServiceTests
         }
 
         [Fact]
-        public async void AlbumService_DeleteAlbum_GetResultFalse()
+        public async void AlbumService_DeleteAlbum_ReturnResultFalse()
         {
             //Arrange
             var dbContext = await InMemoryDb.GetDbContext();
