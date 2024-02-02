@@ -19,8 +19,8 @@ namespace SocialPhotoAppMVC.Services.SearchService
         public async Task<ServiceResponse<IPagedList<Photo>>> SearchPhotos(SearchPhotoVM? searchInput, int? page)
         {
             var foundPhotos = await _context.Photos
-                            .Where(p => (searchInput.Title == null || p.Title.Contains(searchInput.Title)) &&
-                            (searchInput.Description == null || p.Description.Contains(searchInput.Description)) &&
+                            .Where(p => (searchInput.Title == null || p.Title.ToLower().Contains(searchInput.Title.ToLower())) &&
+                            (searchInput.Description == null || p.Description.ToLower().Contains(searchInput.Description.ToLower())) &&
                             (searchInput.Category == null || p.Category == searchInput.Category))
                             .ToListAsync();
 
@@ -45,9 +45,9 @@ namespace SocialPhotoAppMVC.Services.SearchService
         public async Task<ServiceResponse<IPagedList<Album>>> SearchAlbums(SearchAlbumVM searchInput, int? page)
         {
             var foundAlbums = await _context.Albums.Include(a => a.User)
-                .Where(p => (searchInput.Title == null || p.Title.Contains(searchInput.Title)) &&
-                (searchInput.Description == null || p.Description.Contains(searchInput.Description))
-                && (searchInput.Username == null || p.User.NickName.Contains(searchInput.Username)))
+                .Where(p => (searchInput.Title == null || p.Title.ToLower().Contains(searchInput.Title.ToLower())) &&
+                (searchInput.Description == null || p.Description.ToLower().Contains(searchInput.Description.ToLower()))
+                && (searchInput.Username == null || p.User.NickName.ToLower().Contains(searchInput.Username.ToLower())))
                 .ToListAsync();
 
 
@@ -70,7 +70,7 @@ namespace SocialPhotoAppMVC.Services.SearchService
 
         public async Task<ServiceResponse<IPagedList<AppUser>>> SearchUsers(SearchUserVM searchInput, int? page)
         {
-            var foundUsers = await _context.Users.Where(u => u.NickName.Contains(searchInput.NickName)).ToListAsync();
+            var foundUsers = await _context.Users.Where(u => u.NickName.ToLower().Contains(searchInput.NickName.ToLower())).ToListAsync();
             var response = new ServiceResponse<IPagedList<AppUser>>();
 
             if (foundUsers.Count == 0)

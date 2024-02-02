@@ -24,6 +24,7 @@ namespace SocialPhotoAppMVC.Tests
                 new AppUser
                 {
                     Id = $"{i}",
+                    NickName = $"Nick{i}"
                 });
 
                 dbContext.Albums.Add(
@@ -40,6 +41,7 @@ namespace SocialPhotoAppMVC.Tests
                     Title = $"TestPhotoName{i}",
                     Description = $"TestPhotoDescription{i}",
                     User = dbContext.AppUsers.Find($"{i}"),
+                    Category = Enums.Category.Animals
                 });
 
             }
