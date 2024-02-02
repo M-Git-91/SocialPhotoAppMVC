@@ -9,6 +9,5 @@ namespace SocialPhotoAppMVC.Services.UserService
         Task<ServiceResponse<AppUserProfileDTO>> GetUserProfile(string id, int? photosPageCount, int? albumsPageCount, int photosPerPage, int albumsPerPage);
         Task<ServiceResponse<bool>> ChangeNickname(ChangeNicknameVM nicknameVM);
         Task<AppUser?> GetUserById(string id);
-        Task<IPagedList<AppUser>> PaginateListOfUsers(int? page, int resultsPerPage, List<AppUser> allUsers);
     }
 }

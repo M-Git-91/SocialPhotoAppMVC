@@ -12,6 +12,5 @@ namespace SocialPhotoAppMVC.Services.AlbumService
         Task<ServiceResponse<bool>> CreateAlbum(CreateAlbumVM albumVM);
         Task<ServiceResponse<bool>> DeleteAlbum(int albumId); 
         Task<ServiceResponse<bool>> EditAlbum(EditAlbumVM editAlbumVM);
-        Task<IPagedList<Album>> PaginateListOfAlbums(int? page, int resultsPerPage, List<Album> allAlbums);
     }
 }

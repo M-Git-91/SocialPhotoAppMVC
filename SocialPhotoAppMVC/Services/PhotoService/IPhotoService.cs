@@ -18,6 +18,5 @@ namespace SocialPhotoAppMVC.Services.PhotoService
         Task<ServiceResponse<bool>> UploadPhoto(UploadPhotoVM photoVM);
         Task<ServiceResponse<bool>> DeletePhoto(int id);
         Task<ServiceResponse<bool>> EditPhoto(EditPhotoVM editPhotoVM);
-        Task<IPagedList<Photo>> PaginateListOfPhotos(int? page, int resultsPerPage ,List<Photo> allPhotos);
     }
 }

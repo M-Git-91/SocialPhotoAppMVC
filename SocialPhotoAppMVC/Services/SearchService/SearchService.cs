@@ -13,20 +13,11 @@ namespace SocialPhotoAppMVC.Services.SearchService
     public class SearchService : ISearchService
     {
         private readonly ApplicationDbContext _context;
-        private readonly IPhotoService _photoService;
-        private readonly IAlbumService _albumService;
-        private readonly IUserService _userService;
 
         public SearchService(
-            ApplicationDbContext context, 
-            IPhotoService photoService, 
-            IAlbumService albumService, 
-            IUserService userService)
+            ApplicationDbContext context)
         {
             _context = context;
-            _photoService = photoService;
-            _albumService = albumService;
-            _userService = userService;
         }
 
         public async Task<ServiceResponse<IPagedList<Photo>>> SearchPhotos(SearchPhotoVM? searchInput, int? page)
@@ -49,7 +40,8 @@ namespace SocialPhotoAppMVC.Services.SearchService
                 return response;
             }
 
-            var pagedList = await _photoService.PaginateListOfPhotos(page, 1, foundPhotos);
+            var pagedList = await PaginateListOfPhotos(page, 6 ,foundPhotos);
+
             response.Data = pagedList;
 
             return response;
@@ -76,7 +68,7 @@ namespace SocialPhotoAppMVC.Services.SearchService
                 return response;
             }
 
-            var pagedList = await _albumService.PaginateListOfAlbums(page, 6, foundAlbums);
+            var pagedList = await PaginateListOfAlbums(page, 6, foundAlbums);
             response.Data = pagedList;
 
             return response;
@@ -98,10 +90,31 @@ namespace SocialPhotoAppMVC.Services.SearchService
                 return response;
             }
 
-            var pagedList = await _userService.PaginateListOfUsers(page, 6, foundUsers);
+            var pagedList = await PaginateListOfUsers(page, 6, foundUsers);
             response.Data = pagedList;
 
             return response;
+        }
+
+        private async Task<IPagedList<Photo>> PaginateListOfPhotos(int? page, int resultsPerPage, List<Photo> allPhotos)
+        {
+            int pageNumber = (page ?? 1);
+            var pagedList = await allPhotos.ToPagedListAsync(pageNumber, resultsPerPage);
+            return pagedList;
+        }
+
+        private async Task<IPagedList<Album>> PaginateListOfAlbums(int? page, int resultsPerPage, List<Album> allAlbums)
+        {
+            int pageNumber = (page ?? 1);
+            var pagedList = await allAlbums.ToPagedListAsync(pageNumber, resultsPerPage);
+            return pagedList;
+        }
+
+        private async Task<IPagedList<AppUser>> PaginateListOfUsers(int? page, int resultsPerPage, List<AppUser> allUsers)
+        {
+            int pageNumber = (page ?? 1);
+            var pagedList = await allUsers.ToPagedListAsync(pageNumber, resultsPerPage);
+            return pagedList;
         }
     }
 }

@@ -327,7 +327,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             return response;
 
         }
-        public async Task<IPagedList<Photo>> PaginateListOfPhotos(int? page, int resultsPerPage ,List<Photo> allPhotos)
+        private async Task<IPagedList<Photo>> PaginateListOfPhotos(int? page, int resultsPerPage ,List<Photo> allPhotos)
         {
             int pageNumber = (page ?? 1);
             var pagedList = await allPhotos.ToPagedListAsync(pageNumber, resultsPerPage);

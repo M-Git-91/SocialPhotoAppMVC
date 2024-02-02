@@ -90,7 +90,7 @@ namespace SocialPhotoAppMVC.Services.UserService
             return response;
         }
 
-        public async Task<IPagedList<AppUser>> PaginateListOfUsers(int? page, int resultsPerPage, List<AppUser> allUsers)
+        private async Task<IPagedList<AppUser>> PaginateListOfUsers(int? page, int resultsPerPage, List<AppUser> allUsers)
         {
             int pageNumber = (page ?? 1);
             var pagedList = await allUsers.ToPagedListAsync(pageNumber, resultsPerPage);
