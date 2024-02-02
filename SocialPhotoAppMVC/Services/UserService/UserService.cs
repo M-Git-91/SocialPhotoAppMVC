@@ -32,9 +32,7 @@ namespace SocialPhotoAppMVC.Services.UserService
                 return response;
             }
 
-            int pageSize = 6;
-            int pageNumber = (page ?? 1);
-            var pagedList = await allUsers.ToPagedListAsync(pageNumber, pageSize);
+            IPagedList<AppUser> pagedList = await PaginateListOfUsers(page, 6, allUsers);
             response.Data = pagedList;
 
             return response;
@@ -90,6 +88,13 @@ namespace SocialPhotoAppMVC.Services.UserService
 
             response.Data = true;
             return response;
+        }
+
+        public async Task<IPagedList<AppUser>> PaginateListOfUsers(int? page, int resultsPerPage, List<AppUser> allUsers)
+        {
+            int pageNumber = (page ?? 1);
+            var pagedList = await allUsers.ToPagedListAsync(pageNumber, resultsPerPage);
+            return pagedList;
         }
     }
 }

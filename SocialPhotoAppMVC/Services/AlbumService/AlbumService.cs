@@ -28,9 +28,7 @@ namespace SocialPhotoAppMVC.Services.AlbumService
                 return response;
             }
 
-            int pageSize = 6;
-            int pageNumber = (page ?? 1);
-            var pagedList = await allAlbums.ToPagedListAsync(pageNumber, pageSize);
+            IPagedList<Album> pagedList = await PaginateListOfAlbums(page, 6, allAlbums);
             response.Data = pagedList;
 
             return response;
@@ -63,8 +61,7 @@ namespace SocialPhotoAppMVC.Services.AlbumService
                 return response;
             }
 
-            int pageNumber = (page ?? 1);
-            var pagedList = await userAlbums.ToPagedListAsync(pageNumber, albumsPerPage);
+            IPagedList<Album> pagedList = await PaginateListOfAlbums(page, albumsPerPage, userAlbums);
             response.Data = pagedList;
 
             return response;
@@ -192,6 +189,13 @@ namespace SocialPhotoAppMVC.Services.AlbumService
 
             return response;
 
+        }
+
+        public async Task<IPagedList<Album>> PaginateListOfAlbums(int? page, int resultsPerPage, List<Album> allAlbums)
+        {
+            int pageNumber = (page ?? 1);
+            var pagedList = await allAlbums.ToPagedListAsync(pageNumber, resultsPerPage);
+            return pagedList;
         }
 
         private bool Save()
