@@ -74,10 +74,10 @@ namespace SocialPhotoAppMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var uploadPhoto = await _albumService.CreateAlbum(albumVM);
-                if (uploadPhoto.Success == false)
+                var createAlbum = await _albumService.CreateAlbum(albumVM);
+                if (createAlbum.Success == false)
                 {
-                    TempData["Error"] = $"{uploadPhoto.Message}";
+                    TempData["Error"] = $"{createAlbum.Message}";
                     return View(albumVM);
                 }
                 return RedirectToAction("RecentAlbums");
