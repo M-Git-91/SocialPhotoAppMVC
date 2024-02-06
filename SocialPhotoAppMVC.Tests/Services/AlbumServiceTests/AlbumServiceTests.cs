@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -186,6 +187,28 @@ namespace SocialPhotoAppMVC.Tests.Services.AlbumServiceTests
             //Assert
             result.Data.Should().BeFalse();
             result.Success.Should().BeFalse();
+        }
+
+        [Fact]
+        public async void AlbumService_CreateAlbum_ReturnBool()
+        {
+            //Arrange
+            var dbContext = await InMemoryDb.GetDbContext();
+            var service = new AlbumService(dbContext, _cloudService);
+            var fakeService = A.Fake<AlbumService>(options =>
+                options.WithArgumentsForConstructor(() => new AlbumService(dbContext, _cloudService)));
+            var CreateAlbumVM = new CreateAlbumVM { Title = "", Description = "", CoverArt = A.Fake<IFormFile>(), UserId = "1" };
+            var albumModel = new Album { User = A.Fake<AppUser>() };
+            var imageUploadResult = new ImageUploadResult { Url = A.Fake<Uri>() };
+            A.CallTo(() => _cloudService.AddPhotoAsync(CreateAlbumVM.CoverArt)).Returns(imageUploadResult);
+            A.CallTo(() => fakeService.MapCreateAlbumVMtoAlbum(CreateAlbumVM, imageUploadResult)).Returns(albumModel);
+
+            //Act
+            var result = await service.CreateAlbum(CreateAlbumVM);
+
+            //Assert
+            result.Should().BeOfType<ServiceResponse<bool>>();
+            result.Success.Should().BeTrue();
         }
     }
 }

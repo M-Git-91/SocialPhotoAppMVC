@@ -80,7 +80,6 @@ namespace SocialPhotoAppMVC.Tests.Controllers
         {
             //Arrange
             var newNick = A.Fake<ChangeNicknameVM>();
-            var IsChanged = A.Fake<ServiceResponse<bool>>();
 
             //Act
             var result = _userController.ChangeNickname(newNick);

@@ -1,10 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CloudinaryDotNet.Actions;
+using Microsoft.EntityFrameworkCore;
 using SocialPhotoAppMVC.Models;
 using SocialPhotoAppMVC.ViewModels;
+using System.Runtime.CompilerServices;
 using X.PagedList;
+
+[assembly: InternalsVisibleTo("SocialPhotoAppMVC.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
 namespace SocialPhotoAppMVC.Services.AlbumService
 {
+
     public class AlbumService : IAlbumService
     {
         private readonly ApplicationDbContext _context;
@@ -86,20 +92,14 @@ namespace SocialPhotoAppMVC.Services.AlbumService
         {
             var response = new ServiceResponse<bool>();
 
-            var uploadPhoto = await _cloudService.AddPhotoAsync(albumVM.CoverArt);          
+            var uploadPhoto = await _cloudService.AddPhotoAsync(albumVM.CoverArt);
 
             if (uploadPhoto.Error != null)
             {
                 return NegativeResponse("CoverArt upload unsuccessful.");
             }
 
-            var album = new Album
-            {
-                Title = albumVM.Title,
-                Description = albumVM.Description,
-                CoverArtUrl = uploadPhoto.Url.ToString(),
-                User = await _context.Users.FirstOrDefaultAsync(u => u.Id == albumVM.UserId),
-            };
+            Album album = await MapCreateAlbumVMtoAlbum(albumVM, uploadPhoto);
 
             if (album.User == null)
             {
@@ -211,6 +211,18 @@ namespace SocialPhotoAppMVC.Services.AlbumService
             response.Success = false;
             response.Message = $"{errorMessage}";
             return response;
+        }
+
+        
+        internal virtual async Task<Album> MapCreateAlbumVMtoAlbum(CreateAlbumVM albumVM, ImageUploadResult uploadPhoto)
+        {
+            return new Album
+            {
+                Title = albumVM.Title,
+                Description = albumVM.Description,
+                CoverArtUrl = uploadPhoto.Url.ToString(),
+                User = await _context.Users.FirstOrDefaultAsync(u => u.Id == albumVM.UserId),
+            };
         }
     }   
 }
