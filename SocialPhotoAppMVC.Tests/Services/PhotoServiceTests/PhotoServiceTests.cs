@@ -1,4 +1,5 @@
-﻿using FluentAssertions.Common;
+﻿using CloudinaryDotNet.Actions;
+using FluentAssertions.Common;
 using Microsoft.AspNetCore.Http;
 using NuGet.DependencyResolver;
 using SocialPhotoAppMVC.Models;
@@ -223,6 +224,63 @@ namespace SocialPhotoAppMVC.Tests.Services.PhotoServiceTests
             result.Success.Should().BeFalse();
             result.Data.Photo.Should().NotBeNull();
             result.Should().BeOfType<ServiceResponse<AddPhotoToAlbumVM>>();
+        }
+
+        [Fact]
+        public async void PhotoService_UploadPhoto_ReturnSuccessTrue()
+        {
+            //Arrange
+            var dbContext = await InMemoryDb.GetDbContext();
+            var service = new PhotoService(dbContext, _cloudService, _httpContext);
+            var photoVM = new UploadPhotoVM { 
+                Title = "", 
+                Description = "", 
+                Category = Enums.Category.Abstract, 
+                Image = A.Fake<IFormFile>(),
+                UserId = "1"
+            };
+            var imageUploadResult = new ImageUploadResult { Url = A.Fake<Uri>() };
+
+            A.CallTo(() => _cloudService.AddPhotoAsync(photoVM.Image)).Returns(imageUploadResult);
+
+            //Act
+            var result = await service.UploadPhoto(photoVM);
+
+            //Assert
+            result.Should().BeOfType<ServiceResponse<bool>>();
+            result.Success.Should().BeTrue();
+        }
+
+        [Fact]
+        public async void PhotoService_EditPhoto_ReturnSuccessTrue()
+        {
+            //Arrange
+            var dbContext = await InMemoryDb.GetDbContext();
+            dbContext.ChangeTracker.Clear();
+            var service = new PhotoService(dbContext, _cloudService, _httpContext);
+            var fakeService = A.Fake<PhotoService>(options =>
+                options.WithArgumentsForConstructor(
+                    () => new PhotoService(dbContext, _cloudService, _httpContext)));
+
+            var editPhotoVM = new EditPhotoVM { 
+                Title = "", 
+                Description = "", 
+                Category = Enums.Category.Abstract, 
+                ImageUrl = "", 
+                NewImage = A.Fake<IFormFile>(),
+                AuthorId = "1",
+                CurrentUserId = "1",
+                PhotoId = 1
+            };
+            var newPhotoUpload = new ImageUploadResult { Url = A.Fake<Uri>() };
+            A.CallTo(() => _cloudService.AddPhotoAsync(editPhotoVM.NewImage)).Returns(newPhotoUpload);
+
+            //Act
+            var result = await service.EditPhoto(editPhotoVM);
+
+            //Assert
+            result.Should().BeOfType<ServiceResponse<bool>>();
+            result.Success.Should().BeTrue();
         }
     }
 }

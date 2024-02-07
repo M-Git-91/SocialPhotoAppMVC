@@ -38,7 +38,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             return response;
         }
 
-        public async Task<ServiceResponse<Photo>> GetPhotoByIdAsync(int id)
+        public virtual async Task<ServiceResponse<Photo>> GetPhotoByIdAsync(int id)
         {
             var photo = await _context.Photos.AsNoTracking().Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
             var response = new ServiceResponse<Photo> { Data = photo };
