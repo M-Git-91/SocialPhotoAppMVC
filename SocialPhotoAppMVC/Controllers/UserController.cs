@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using CloudinaryDotNet;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SocialPhotoAppMVC.Services.UserService;
 using SocialPhotoAppMVC.ViewModels;
 using System.Security.Claims;
+using System.Security.Principal;
 
 namespace SocialPhotoAppMVC.Controllers
 {
@@ -48,6 +50,7 @@ namespace SocialPhotoAppMVC.Controllers
         }
 
         [HttpGet, Authorize]
+        [Route("Identity/Account/Manage/Nickname")]
         public async Task<IActionResult> ChangeNickname() 
         {
             string currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -59,6 +62,7 @@ namespace SocialPhotoAppMVC.Controllers
         }
 
         [HttpPost, Authorize]
+        [Route("Identity/Account/Manage/Nickname")]
         public async Task<IActionResult> ChangeNickname(ChangeNicknameVM newNick) 
         {
             await _userService.ChangeNickname(newNick);
@@ -67,6 +71,7 @@ namespace SocialPhotoAppMVC.Controllers
         }
 
         [HttpGet, Authorize]
+        [Route("Identity/Account/Manage/ProfilePhoto")]
         public async Task<IActionResult> ChangeProfilePhoto() 
         {
             string currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -82,6 +87,7 @@ namespace SocialPhotoAppMVC.Controllers
         }
 
         [HttpPost, Authorize]
+        [Route("Identity/Account/Manage/ProfilePhoto")]
         public async Task<IActionResult> ChangeProfilePhoto(ChangeProfilePhotoVM newProfilePhoto)
         {
             await _userService.ChangeProfilePhoto(newProfilePhoto);

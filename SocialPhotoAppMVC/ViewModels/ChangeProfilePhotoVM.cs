@@ -1,4 +1,5 @@
 ﻿using SocialPhotoAppMVC.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace SocialPhotoAppMVC.ViewModels
 {
@@ -6,6 +7,7 @@ namespace SocialPhotoAppMVC.ViewModels
     {
         public string CurrentUserId { get; set; }
         public string OldProfileImage { get; set; }
+        [Required]
         public IFormFile NewProfileImage { get; set;}
     }
 }
