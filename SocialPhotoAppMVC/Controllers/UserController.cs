@@ -65,5 +65,28 @@ namespace SocialPhotoAppMVC.Controllers
 
             return RedirectToAction("ChangeNickname");
         }
+
+        [HttpGet, Authorize]
+        public async Task<IActionResult> ChangeProfilePhoto() 
+        {
+            string currentUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userModel = await _userService.GetUserById(currentUserId);
+
+            var changeProfilePhotoVM = new ChangeProfilePhotoVM
+            {
+                CurrentUserId = currentUserId,
+                OldProfileImage = userModel.ProfilePictureURL
+            };
+
+            return View(changeProfilePhotoVM);
+        }
+
+        [HttpPost, Authorize]
+        public async Task<IActionResult> ChangeProfilePhoto(ChangeProfilePhotoVM newProfilePhoto)
+        {
+            await _userService.ChangeProfilePhoto(newProfilePhoto);
+
+            return RedirectToAction("ChangeProfilePhoto");
+        }
     }
 }

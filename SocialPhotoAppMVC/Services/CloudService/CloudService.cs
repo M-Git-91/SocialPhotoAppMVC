@@ -1,5 +1,6 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Options;
 using SocialPhotoAppMVC.Helpers;
 
@@ -42,6 +43,24 @@ namespace SocialPhotoAppMVC.Services
             var deleteParams = new DeletionParams(publicId);
             var result = await _cloudinary.DestroyAsync(deleteParams);
             return result;
+        }
+
+        public async Task<ImageUploadResult> UploadProfilePhoto(IFormFile file) 
+        {
+            var uploadResult = new ImageUploadResult();
+
+            if (file.Length > 0) 
+            {
+                var stream = file.OpenReadStream();
+                var uploadParams = new ImageUploadParams
+                {
+                    File = new FileDescription(file.FileName, stream),
+                    Transformation = new Transformation().Height(500).Width(500).Crop("fill")
+                };
+
+                uploadResult = await _cloudinary.UploadAsync(uploadParams);
+            }
+            return uploadResult;
         }
 
     }

@@ -12,12 +12,14 @@ namespace SocialPhotoAppMVC.Services.UserService
         private readonly ApplicationDbContext _context;
         private readonly IPhotoService _photoService;
         private readonly IAlbumService _albumService;
+        private readonly ICloudService _cloudService;
 
-        public UserService(ApplicationDbContext context, IPhotoService photoService, IAlbumService albumService)
+        public UserService(ApplicationDbContext context, IPhotoService photoService, IAlbumService albumService, ICloudService cloudService)
         {
             _context = context;
             _photoService = photoService;
             _albumService = albumService;
+            _cloudService = cloudService;
         }
 
         public async Task<ServiceResponse<IPagedList<AppUser>>> GetAllUsers(int? page)
@@ -84,6 +86,26 @@ namespace SocialPhotoAppMVC.Services.UserService
 
             userModel.NickName = nicknameVM.Nickname;
             _context.AppUsers.Update(userModel);
+            await _context.SaveChangesAsync();
+
+            response.Data = true;
+            return response;
+        }
+        public async Task<ServiceResponse<bool>> ChangeProfilePhoto(ChangeProfilePhotoVM profilePhotoVM)
+        {
+            var response = new ServiceResponse<bool>();
+            var userModel = await GetUserById(profilePhotoVM.CurrentUserId);
+
+            var newPhotoUpload = await _cloudService.UploadProfilePhoto(profilePhotoVM.NewProfileImage);
+
+            if (!string.IsNullOrEmpty(userModel.ProfilePictureURL))
+            {
+                await _cloudService.DeletePhotoAsync(userModel.ProfilePictureURL);
+            }
+
+            userModel.ProfilePictureURL = newPhotoUpload.Url.ToString();
+
+            _context.AppUsers.Update(userModel); 
             await _context.SaveChangesAsync();
 
             response.Data = true;

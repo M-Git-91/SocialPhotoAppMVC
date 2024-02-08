@@ -1,0 +1,21 @@
+﻿@using SocialPhotoAppMVC.ViewModels
+@model ChangeProfilePhotoVM
+@{
+    ViewData["Title"] = "Change Profile Photo";
+}
+
+<div class="w-75 m-auto mt-3">
+    <h1>Profile photo editing</h1>
+
+    <form method="post" asp-action="ChangeProfilePhoto" enctype="multipart/form-data">
+        <input type="hidden" value="CurrentUserId" id="CurrentUserId" />
+        <div class="form-group">
+            <label asp-for="NewProfileImage">Choose new profile image</label>
+            <input type="file" asp-for="NewProfileImage" class="form-control">
+            <span asp-validation-for="NewProfileImage" class="text-danger"></span>
+        </div>
+        <input type="hidden" asp-for="CurrentUserId" />
+
+        <button type="submit" class="btn btn-dark mt-3">Submit</button>
+    </form>
+</div>

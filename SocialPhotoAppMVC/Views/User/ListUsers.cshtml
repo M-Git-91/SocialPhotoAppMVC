@@ -25,7 +25,7 @@
                             {
                                 <h4 class="card-text text-center">@item.UserName</h4>
                             }
-                            <p class="card-text text-center">@item.DateCreated.Date</p>
+                            <p class="card-text text-center">Joined: @item.DateCreated.Date.Year</p>
                             <a asp-controller="User" asp-action="UserProfile" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">View</a>
                         </div>
                     </div>

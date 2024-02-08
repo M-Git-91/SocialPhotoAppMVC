@@ -6,6 +6,7 @@ namespace SocialPhotoAppMVC.Services
     {
         Task<ImageUploadResult> AddPhotoAsync(IFormFile file);
         Task<DeletionResult> DeletePhotoAsync(string publicUrl);
+        Task<ImageUploadResult> UploadProfilePhoto(IFormFile file);
 
 
     }
