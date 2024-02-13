@@ -4,11 +4,12 @@ using X.PagedList;
 
 namespace SocialPhotoAppMVC.ViewModels
 {
-    public class AppUserProfileDTO
+    public class AppUserProfileVM
     {
         public string UserId { get; set; }
         public string NickName { get; set; } = string.Empty;
-        public string ProfilePictureURL { get; set; } = "https://res.cloudinary.com/dfqrqfs3a/image/upload/v1697360852/logo/nbhvsn7pmjzh5wumus1e.png";
+        public string Email { get; set; } = string.Empty;
+        public string ProfilePictureURL { get; set; } = "https://res.cloudinary.com/dfqrqfs3a/image/upload/v1707836114/logo/l6otrikrypyituu6ogbl.jpg";
         [DataType(DataType.Date), Column(TypeName = "Date")]
         public DateTime DateCreated { get; set; }
         public IPagedList<Photo>? Photos { get; set; }

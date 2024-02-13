@@ -1,7 +1,7 @@
 ﻿@using SocialPhotoAppMVC.ViewModels
 @using X.PagedList.Mvc.Core
 @using Microsoft.AspNetCore.Identity
-@model ServiceResponse<AppUserProfileDTO>
+@model ServiceResponse<AppUserProfileVM>
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
 @section Styles {
@@ -25,7 +25,7 @@
     }
     else
     {
-        <h1 class="card-header mb-4">@User.Identity.Name</h1>
+        <h1 class="card-header mb-4">@Model.Data.Email</h1>
     }
 
     @if (Model.Data.Photos == null)

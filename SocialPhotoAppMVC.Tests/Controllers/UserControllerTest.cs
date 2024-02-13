@@ -52,7 +52,7 @@ namespace SocialPhotoAppMVC.Tests.Controllers
             var albumsPage = 1;
             var photosPerPage = 1;
             var albumsPerPage = 1;
-            var userProfile = A.Fake<ServiceResponse<AppUserProfileDTO>>();
+            var userProfile = A.Fake<ServiceResponse<AppUserProfileVM>>();
             A.CallTo(() => _userService.GetUserProfile(userId, photosPage, albumsPage, photosPerPage, albumsPerPage))
                 .Returns(userProfile);
 
