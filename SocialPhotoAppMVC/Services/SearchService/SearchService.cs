@@ -78,6 +78,8 @@ namespace SocialPhotoAppMVC.Services.SearchService
         {
             var foundUsers = await _context.Users
                 .Where(u => (searchInput.NickName == null || u.NickName.ToLower().Trim()
+                .Contains(searchInput.NickName.ToLower().Trim()) || 
+                    u.UserName.ToLower().Trim()
                 .Contains(searchInput.NickName.ToLower().Trim())))
                 .ToListAsync();
 
