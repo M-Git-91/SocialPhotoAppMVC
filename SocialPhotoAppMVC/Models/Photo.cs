@@ -19,6 +19,6 @@ namespace SocialPhotoAppMVC.Models
         [DataType(DataType.Date), Column(TypeName = "Date")]
         public DateTime DateCreated { get; set; } = DateTime.Now;
         public AppUser User { get; set; }
-        public List<Album> Albums { get; set; }
+        public List<Album> Albums { get; set; } = new List<Album>();
     }
 }
