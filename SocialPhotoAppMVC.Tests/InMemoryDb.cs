@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SocialPhotoAppMVC.Tests
 {
-    public class InMemoryDb
+    public static class InMemoryDb
     {
         public static async Task<ApplicationDbContext> GetDbContext()
         {
