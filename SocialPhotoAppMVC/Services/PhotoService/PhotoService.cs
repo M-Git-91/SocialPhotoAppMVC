@@ -74,7 +74,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
 
         public async Task<ServiceResponse<Photo>> GetPhotoDetail(int id)
         {
-            var photo = await _context.Photos.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
+            var photo = await _context.Photos.Include(p => p.User).Include(p => p.Comments).FirstOrDefaultAsync(p => p.Id == id);
             var response = new ServiceResponse<Photo> { Data = photo };
 
             if (response.Data == null) 

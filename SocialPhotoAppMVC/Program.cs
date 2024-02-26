@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using SocialPhotoAppMVC.Helpers;
 using SocialPhotoAppMVC.Services;
 using SocialPhotoAppMVC.Services.AlbumService;
+using SocialPhotoAppMVC.Services.CommentService;
 using SocialPhotoAppMVC.Services.PhotoService;
 using SocialPhotoAppMVC.Services.SearchService;
 using SocialPhotoAppMVC.Services.UserService;
@@ -30,6 +31,7 @@ builder.Services.AddScoped<ICloudService, CloudService>();
 builder.Services.AddScoped<IAlbumService, AlbumService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 
 //Identity
 builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true)
