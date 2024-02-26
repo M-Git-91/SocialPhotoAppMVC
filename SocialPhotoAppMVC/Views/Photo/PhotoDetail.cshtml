@@ -1,4 +1,5 @@
-﻿@model ServiceResponse<Photo>
+﻿@using X.PagedList.Mvc.Core
+@model ServiceResponse<Photo>
 
 <div class="text-center w-75 m-auto mt-5">
     @* Modal button *@
@@ -17,6 +18,31 @@
             <p class="">Upload Date: @Model.Data.DateCreated.ToShortDateString()</p>
         </div>
     </section>
+    @* Comments *@
+<section class="text-dark card bg-body-secondary mb-3 mt-3 m-auto">
+    <h3 class="card-header">Comments</h3>
+    <a asp-controller="Comment" asp-action="CreateComment" asp-route-id="@Model.Data.Id" class="btn btn-sm btn-outline-secondary">Add Comment</a>
+    <div class="card-body bg-white">
+        @if (Model.Data.Comments.Count != 0)
+        {
+            foreach (var comment in Model.Data.Comments)
+            {
+                <div>
+                    <h4>@comment.AppUser.NickName</h4>
+                    <p>@comment.Text</p>
+                </div>
+
+            }
+        }
+        else
+        {
+            <div class="col-md-12 w-50 m-auto mt-5 text-center">
+                <h4>No comments</h4>
+            </div>
+        }
+    </div>
+    @*@Html.PagedListPager(Model.Data, page => Url.Action("Index", new { page }))*@
+</section>
 </div>
 
 @* Modal *@
