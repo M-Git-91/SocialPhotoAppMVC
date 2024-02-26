@@ -72,10 +72,28 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             return response;
         }
 
-        public async Task<ServiceResponse<Photo>> GetPhotoDetail(int id)
+        public async Task<ServiceResponse<PhotoDetailVM>> GetPhotoDetail(int id)
         {
-            var photo = await _context.Photos.Include(p => p.User).Include(p => p.Comments).FirstOrDefaultAsync(p => p.Id == id);
-            var response = new ServiceResponse<Photo> { Data = photo };
+            var photoModel = await _context.Photos
+                .Include(p => p.User)
+                .Include(p => p.Comments)
+                    .ThenInclude(c => c.AppUser)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            var photoDetailVM = new PhotoDetailVM 
+            {
+                Id = photoModel.Id,
+                Title = photoModel.Title,
+                Description = photoModel.Description,
+                Category = photoModel.Category,
+                ImageUrl = photoModel.ImageUrl,
+                Albums = photoModel.Albums,
+                DateCreated = photoModel.DateCreated,
+                User = photoModel.User,
+                Comments = photoModel.Comments
+            };
+
+            var response = new ServiceResponse<PhotoDetailVM> { Data = photoDetailVM };
 
             if (response.Data == null) 
             {
