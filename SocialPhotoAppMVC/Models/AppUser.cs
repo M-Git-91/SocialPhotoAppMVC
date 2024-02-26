@@ -15,5 +15,6 @@ namespace SocialPhotoAppMVC.Models
         public DateTime DateCreated { get; set; } = DateTime.Now;
         public List<Photo> Photos { get; set; } = new List<Photo>();
         public List<Album> Albums { get; set; } = new List<Album>();
+        public List<Comment> Comments { get; set; } = new List<Comment>();
     }
 }
