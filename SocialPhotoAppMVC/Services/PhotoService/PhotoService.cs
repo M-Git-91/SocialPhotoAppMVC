@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using SocialPhotoAppMVC.Models;
+using SocialPhotoAppMVC.Services.CommentService;
 using SocialPhotoAppMVC.ViewModels;
 using System.Security.Claims;
 using X.PagedList;
@@ -12,12 +13,14 @@ namespace SocialPhotoAppMVC.Services.PhotoService
         private readonly ApplicationDbContext _context;
         private readonly ICloudService _cloudService;
         private readonly IHttpContextAccessor _httpContext;
+        private readonly ICommentService _commentService;
 
-        public PhotoService(ApplicationDbContext context, ICloudService cloudService, IHttpContextAccessor httpContext)
+        public PhotoService(ApplicationDbContext context, ICloudService cloudService, IHttpContextAccessor httpContext, ICommentService commentService)
         {
             _context = context;
             _cloudService = cloudService;
             _httpContext = httpContext;
+            _commentService = commentService;
         }
 
         public async Task<ServiceResponse<IPagedList<Photo>>> GetAllPhotos(int? page)
@@ -72,13 +75,15 @@ namespace SocialPhotoAppMVC.Services.PhotoService
             return response;
         }
 
-        public async Task<ServiceResponse<PhotoDetailVM>> GetPhotoDetail(int id)
+        public async Task<ServiceResponse<PhotoDetailVM>> GetPhotoDetail(int id, int? page)
         {
             var photoModel = await _context.Photos
                 .Include(p => p.User)
                 .Include(p => p.Comments)
                     .ThenInclude(c => c.AppUser)
                 .FirstOrDefaultAsync(p => p.Id == id);
+
+            var paginatedComments = await _commentService.PaginateListOfComments(page,3,photoModel.Comments);
 
             var photoDetailVM = new PhotoDetailVM 
             {
@@ -90,7 +95,7 @@ namespace SocialPhotoAppMVC.Services.PhotoService
                 Albums = photoModel.Albums,
                 DateCreated = photoModel.DateCreated,
                 User = photoModel.User,
-                Comments = photoModel.Comments
+                Comments = paginatedComments
             };
 
             var response = new ServiceResponse<PhotoDetailVM> { Data = photoDetailVM };

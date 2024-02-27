@@ -7,8 +7,8 @@
 <div class="w-75 m-auto mt-3">
     <form method="post" asp-action="CreateComment" enctype="multipart/form-data" class="h-50">
         <div class="form-group">
-            <label asp-for="Text">Your Comment</label>
-            <textarea asp-for="Text" class="form-control w-50" rows="4"></textarea>
+            <label asp-for="Text">Comment</label>
+            <input asp-for="Text" class="form-control" placeholder="Add a comment about this photo">
             <span asp-validation-for="Text" class="text-danger"></span>
         </div>
         <input type="hidden" asp-for="UserId" name="UserId" />

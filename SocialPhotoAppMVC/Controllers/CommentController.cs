@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using SocialPhotoAppMVC.Models;
 using SocialPhotoAppMVC.Services.CommentService;
 using System.Security.Claims;
 
@@ -33,9 +34,18 @@ namespace SocialPhotoAppMVC.Controllers
         [HttpPost, ActionName("CreateComment"), Authorize]
         public async Task<IActionResult> CreateCommentPOST(CreateCommentVM commentVM) 
         {
-            await _commentService.CreateCommentPOST(commentVM);
+            if (ModelState.IsValid)
+            {
+                await _commentService.CreateCommentPOST(commentVM);
 
-            return Redirect(Request.Headers["Referer"].ToString());
+                return RedirectToAction();
+            }
+            else
+            {
+                ModelState.AddModelError("", "Photo upload unsuccessful.");
+                return View(commentVM);
+            }
+
         }
     }
 }

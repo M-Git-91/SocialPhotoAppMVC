@@ -4,10 +4,10 @@ namespace SocialPhotoAppMVC.ViewModels
 {
     public class CreateCommentVM
     {
-        [Key]
         public int Id { get; set; }
         [Required(ErrorMessage = "Comment text is required")]
-        public string Text { get; set; }
+        [MinLength(1)]
+        public string Text { get; set; } = string.Empty;
         public string UserId { get; set; }
         public int PhotoId { get; set; }
     }

@@ -19,37 +19,38 @@
         </div>
     </section>
     @* Comments *@
-<section class="text-dark card bg-body-secondary mb-3 mt-3 m-auto">
-    <h3 class="card-header">Comments</h3>
-    <a asp-controller="Comment" asp-action="CreateComment" asp-route-id="@Model.Data.Id" class="btn btn-sm btn-outline-secondary">Add Comment</a>
-    <div class="card-body bg-white">
-        @if (Model.Data.Comments.Count != 0)
-        {
-            foreach (var comment in Model.Data.Comments)
+    <section class="text-dark card bg-body-secondary mb-3 mt-3 w-auto">
+        <h3 class="card-header">Comments</h3>
+        <a asp-controller="Comment" asp-action="CreateComment" asp-route-id="@Model.Data.Id" class="btn btn-sm btn-outline-secondary">Add Comment</a>
+        <div class="card-body bg-white">
+            @if (Model.Data.Comments.Count != 0)
             {
-                <div>
-                    <h4>@comment.AppUser.NickName</h4>
-                    <p>@comment.Text</p>
-                </div>
-
+                foreach (var comment in Model.Data.Comments)
+                {
+                    <section class="text-dark card bg-body-secondary text-start mb-3 mt-3">
+                        <h4 class="card-header">@comment.AppUser.NickName</h4>
+                        <div class="card-body bg-white">
+                            <p class="">@comment.Text</p>
+                        </div>
+                    </section>
+                }
             }
-        }
-        else
-        {
-            <div class="col-md-12 w-50 m-auto mt-5 text-center">
-                <h4>No comments</h4>
-            </div>
-        }
-    </div>
-    @*@Html.PagedListPager(Model.Data, page => Url.Action("Index", new { page }))*@
-</section>
+            else
+            {
+                <div class="col-md-12 w-50 m-auto mt-5 text-center">
+                    <h4>No comments</h4>
+                </div>
+            }
+        </div>
+        @Html.PagedListPager(Model.Data.Comments, page => Url.Action("PhotoDetail", new { id = Model.Data.Id, page }))                                                                                  
+    </section>
 </div>
 
-@* Modal *@
-<div class="modal fade" id="zoomPhoto" tabindex="-1" aria-labelledby="modalZoomedPhoto" aria-hidden="true">
-    <div class="modal-dialog modal-lg mw-100 m-0">
-        <div class="modal-body text-center">
-            <img src="@Model.Data.ImageUrl" style="max-width:95vw; max-height:95vh;" alt="originalSizePhoto" />
+        @* Modal *@
+    <div class="modal fade" id="zoomPhoto" tabindex="-1" aria-labelledby="modalZoomedPhoto" aria-hidden="true">
+        <div class="modal-dialog modal-lg mw-100 m-0">
+            <div class="modal-body text-center">
+                <img src="@Model.Data.ImageUrl" style="max-width:95vw; max-height:95vh;" alt="originalSizePhoto" />
+            </div>
         </div>
     </div>
-</div>

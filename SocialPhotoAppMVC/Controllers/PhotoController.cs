@@ -57,9 +57,9 @@ namespace SocialPhotoAppMVC.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> PhotoDetail(int id)
+        public async Task<IActionResult> PhotoDetail(int id, int? page)
         {
-            var findPhoto = await _photoService.GetPhotoDetail(id);
+            var findPhoto = await _photoService.GetPhotoDetail(id, page);
             if (findPhoto.Success == false)
             {
                 var errorMessage = findPhoto.Message;

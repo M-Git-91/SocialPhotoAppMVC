@@ -1,6 +1,7 @@
 ﻿using SocialPhotoAppMVC.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using X.PagedList;
 
 namespace SocialPhotoAppMVC.ViewModels
 {
@@ -16,6 +17,6 @@ namespace SocialPhotoAppMVC.ViewModels
         public DateTime DateCreated { get; set; } = DateTime.Now;
         public AppUser User { get; set; }
         public List<Album> Albums { get; set; } = new List<Album>();
-        public List<Comment> Comments { get; set; } = new List<Comment>();
+        public IPagedList<Comment>? Comments { get; set; }
     }
 }
